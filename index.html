@@ -4,134 +4,313 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mom's Moving Checklist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-bg: #eef2ff;
+            --green: #22c55e;
+            --green-bg: #f0fdf4;
+            --orange: #f59e0b;
+            --orange-bg: #fffbeb;
+            --red: #ef4444;
+            --red-bg: #fef2f2;
+            --purple: #a855f7;
+            --purple-bg: #faf5ff;
+            --gray: #94a3b8;
+            --blue: #3b82f6;
+            --blue-bg: #eff6ff;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: Georgia, 'Times New Roman', serif;
-            background: #faf7f2;
-            color: #3a3a3a;
-            font-size: 18px;
-            line-height: 1.5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 100vh;
         }
 
-        header {
-            background: linear-gradient(135deg, #6b8f71, #8fbc8f);
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--text);
             color: white;
-            text-align: center;
-            padding: 24px 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-lg);
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            color: white;
+            padding: 28px 20px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -60%;
+            left: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
         header h1 {
-            font-size: 2rem;
-            font-weight: normal;
-            letter-spacing: 1px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
         header p {
-            font-size: 1rem;
-            opacity: 0.9;
-            margin-top: 4px;
-        }
-
-        .save-banner {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #4a7c59;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-size: 1rem;
-            z-index: 1000;
-            animation: fadeOut 2s ease-in-out forwards;
-        }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; display: none; }
-        }
-
-        /* Room Tabs */
-        .tabs-wrapper {
-            background: #f0ebe3;
-            border-bottom: 2px solid #d4cfc7;
-            padding: 12px 12px 0;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .tabs {
-            display: flex;
-            gap: 4px;
-            min-width: max-content;
-        }
-        .tab {
-            padding: 10px 18px;
-            background: #e8e2d8;
-            border: 1px solid #d4cfc7;
-            border-bottom: none;
-            border-radius: 8px 8px 0 0;
-            cursor: pointer;
-            font-size: 1rem;
-            font-family: inherit;
-            color: #5a5a5a;
-            white-space: nowrap;
-            transition: background 0.2s;
-        }
-        .tab:hover { background: #f5f0e8; }
-        .tab.active {
-            background: #faf7f2;
-            color: #3a3a3a;
-            font-weight: bold;
-            border-bottom: 2px solid #faf7f2;
-            margin-bottom: -2px;
-        }
-
-        /* Stats Bar */
-        .stats-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 16px 20px;
-            background: #f5f0e8;
-            border-bottom: 1px solid #e0dbd3;
             font-size: 0.95rem;
+            opacity: 0.85;
+            margin-top: 4px;
+            font-weight: 400;
         }
-        .stat {
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            backdrop-filter: blur(4px);
+        }
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+        .sync-dot.offline { background: #fbbf24; }
+        .sync-dot.error { background: #f87171; }
+
+        /* Progress Section */
+        .progress-section {
+            max-width: 800px;
+            margin: -16px auto 0;
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+        .progress-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+        .progress-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .progress-pct {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .progress-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .mini-stat {
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
-        .stat-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
+        .mini-stat-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
         }
-        .dot-total { background: #6b8f71; }
-        .dot-assigned { background: #5b8abf; }
-        .dot-garage { background: #c4883d; }
-        .dot-sell { background: #b85c5c; }
-        .dot-give { background: #8b6fad; }
-        .dot-trash { background: #7a7a7a; }
-        .dot-done { background: #4a7c59; }
 
-        /* Room Content */
-        .room-content {
-            display: none;
-            padding: 20px;
-            max-width: 1000px;
+        /* Room Navigation - Horizontal pills on mobile */
+        .room-nav {
+            max-width: 800px;
+            margin: 16px auto 0;
+            padding: 0 16px;
+        }
+        .room-pills {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0 12px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .room-pills::-webkit-scrollbar { display: none; }
+
+        .room-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 100px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-family: inherit;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+        .room-pill:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
+        .room-pill.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+        }
+        .room-pill .pill-count {
+            font-size: 0.75rem;
+            padding: 1px 7px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.08);
+            font-weight: 600;
+        }
+        .room-pill.active .pill-count {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Filter Bar */
+        .filter-section {
+            max-width: 800px;
             margin: 0 auto;
+            padding: 0 16px 8px;
         }
-        .room-content.active { display: block; }
+        .filter-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-right: 4px;
+        }
+        .filter-chip {
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card);
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-family: inherit;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+        }
+        .filter-chip:hover { border-color: var(--primary-light); color: var(--primary); }
+        .filter-chip.active {
+            background: var(--primary-bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
 
+        /* Main Content */
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 8px 16px 32px;
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
         .room-title {
-            font-size: 1.5rem;
-            color: #5a7a5e;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #d4cfc7;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .room-count {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
 
         /* Checklist Items */
@@ -139,368 +318,496 @@
 
         .checklist-item {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 16px;
-            background: white;
-            border: 1px solid #e0dbd3;
-            border-radius: 8px;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             margin-bottom: 8px;
-            transition: box-shadow 0.2s, opacity 0.3s;
+            transition: all 0.2s;
+            cursor: default;
         }
         .checklist-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-md);
+            border-color: #cbd5e1;
         }
         .checklist-item.done {
-            opacity: 0.55;
-            background: #f0ede8;
+            background: #f8fafc;
+            border-color: #e2e8f0;
         }
+        .checklist-item.done .item-text { opacity: 0.5; }
         .checklist-item.done .item-name {
             text-decoration: line-through;
+            color: var(--text-secondary);
         }
 
-        .item-check {
-            width: 24px;
-            height: 24px;
+        /* Custom Checkbox */
+        .custom-check {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
             cursor: pointer;
-            accent-color: #6b8f71;
-            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            margin-top: 1px;
+        }
+        .custom-check:hover { border-color: var(--primary); }
+        .custom-check.checked {
+            background: var(--green);
+            border-color: var(--green);
+        }
+        .custom-check.checked::after {
+            content: '';
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg) translateY(-1px);
         }
 
-        .item-name {
+        .item-body {
             flex: 1;
-            min-width: 150px;
-            font-size: 1.1rem;
+            min-width: 0;
         }
-
-        .item-tags {
+        .item-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            word-break: break-word;
+        }
+        .item-meta {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
+            margin-top: 6px;
             align-items: center;
         }
-
-        .tag {
-            padding: 3px 10px;
-            border-radius: 12px;
+        .item-notes {
             font-size: 0.8rem;
-            font-weight: bold;
-            color: white;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-style: italic;
         }
-        .tag-who { background: #5b8abf; }
-        .tag-garage { background: #c4883d; }
-        .tag-sell { background: #b85c5c; }
-        .tag-give { background: #8b6fad; }
-        .tag-trash { background: #7a7a7a; }
 
+        /* Tags */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .tag-who { background: var(--blue-bg); color: var(--blue); }
+        .tag-garage { background: var(--orange-bg); color: #d97706; }
+        .tag-sell { background: var(--red-bg); color: var(--red); }
+        .tag-give { background: var(--purple-bg); color: var(--purple); }
+        .tag-trash { background: #f1f5f9; color: #475569; }
+
+        /* Item Actions */
         .item-actions {
             display: flex;
-            gap: 6px;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.15s;
         }
-        .btn-edit, .btn-delete {
-            padding: 4px 10px;
-            border: 1px solid #d4cfc7;
-            border-radius: 6px;
-            background: #f5f0e8;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-family: inherit;
-            color: #5a5a5a;
-            transition: background 0.2s;
-        }
-        .btn-edit:hover { background: #e8e2d8; }
-        .btn-delete { color: #b85c5c; }
-        .btn-delete:hover { background: #f5e0e0; }
+        .checklist-item:hover .item-actions { opacity: 1; }
 
-        /* Add Item Form */
-        .add-section {
-            margin-top: 20px;
-            padding: 20px;
-            background: white;
-            border: 2px dashed #d4cfc7;
-            border-radius: 12px;
-        }
-        .add-section h3 {
-            color: #6b8f71;
-            margin-bottom: 14px;
-            font-size: 1.15rem;
-        }
-        .form-row {
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card);
+            cursor: pointer;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: all 0.15s;
         }
-        .form-group {
+        .action-btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .action-btn.delete:hover { background: var(--red-bg); border-color: #fecaca; color: var(--red); }
+
+        /* Add Item Section */
+        .add-section {
+            margin-top: 16px;
+        }
+        .add-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 18px;
+            background: var(--card);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: inherit;
+            font-weight: 500;
+            color: var(--text-secondary);
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .add-toggle:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+            background: var(--primary-bg);
+        }
+        .add-toggle .plus-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            background: var(--primary-bg);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .add-form {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            animation: slideDown 0.2s ease;
+        }
+        .add-form.open { display: block; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .form-grid .full-width { grid-column: 1 / -1; }
+
+        .input-group {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        .form-group label {
-            font-size: 0.85rem;
-            color: #7a7a7a;
+        .input-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .form-group input, .form-group select {
-            padding: 8px 12px;
-            border: 1px solid #d4cfc7;
-            border-radius: 6px;
-            font-size: 1rem;
+        .input-group input[type="text"] {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-family: inherit;
-            background: #faf7f2;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.15s;
         }
-        .form-group input:focus, .form-group select:focus {
+        .input-group input[type="text"]:focus {
             outline: none;
-            border-color: #6b8f71;
-            box-shadow: 0 0 0 2px rgba(107,143,113,0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+            background: var(--card);
         }
 
-        .checkbox-row {
+        .tag-options {
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
         }
-        .checkbox-row label {
+        .tag-option {
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.95rem;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            user-select: none;
         }
-        .checkbox-row input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #6b8f71;
-        }
+        .tag-option:hover { border-color: #cbd5e1; }
+        .tag-option input { display: none; }
+        .tag-option.selected-garage { background: var(--orange-bg); border-color: #fcd34d; color: #d97706; }
+        .tag-option.selected-sell { background: var(--red-bg); border-color: #fca5a5; color: var(--red); }
+        .tag-option.selected-give { background: var(--purple-bg); border-color: #d8b4fe; color: var(--purple); }
+        .tag-option.selected-trash { background: #f1f5f9; border-color: #cbd5e1; color: #475569; }
 
-        .btn-add {
-            margin-top: 12px;
-            padding: 10px 28px;
-            background: #6b8f71;
-            color: white;
+        .form-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .btn {
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
-            font-size: 1.05rem;
+            font-size: 0.875rem;
             font-family: inherit;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.15s;
         }
-        .btn-add:hover { background: #5a7c60; }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover { background: #4f46e5; }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-secondary);
+        }
+        .btn-secondary:hover { background: #e2e8f0; }
 
-        /* Edit Modal */
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(15,23,42,0.5);
+            backdrop-filter: blur(4px);
             z-index: 999;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
+            padding: 16px;
         }
-        .modal-overlay.open { display: flex; }
+        .modal-overlay.open {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
         .modal {
-            background: #faf7f2;
-            border-radius: 16px;
-            padding: 28px;
-            width: 90%;
-            max-width: 480px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        .modal h3 {
-            color: #6b8f71;
-            margin-bottom: 16px;
-            font-size: 1.3rem;
-        }
-        .modal .form-group {
-            margin-bottom: 12px;
-        }
-        .modal .form-group input, .modal .form-group select {
+            background: var(--card);
+            border-radius: 20px 20px 16px 16px;
+            padding: 24px;
             width: 100%;
+            max-width: 480px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 90vh;
+            overflow-y: auto;
         }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 18px;
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        .btn-save {
-            padding: 10px 24px;
-            background: #6b8f71;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            cursor: pointer;
+        .modal-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 20px;
         }
-        .btn-save:hover { background: #5a7c60; }
-        .btn-cancel {
-            padding: 10px 24px;
-            background: #e0dbd3;
-            color: #5a5a5a;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            cursor: pointer;
-        }
-        .btn-cancel:hover { background: #d4cfc7; }
 
-        /* Progress Bar */
-        .progress-container {
-            padding: 12px 20px;
-            background: #f5f0e8;
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
         }
-        .progress-label {
+        .empty-state .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        .empty-state p {
             font-size: 0.9rem;
-            color: #7a7a7a;
-            margin-bottom: 6px;
-        }
-        .progress-bar {
-            height: 10px;
-            background: #e0dbd3;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #6b8f71, #8fbc8f);
-            border-radius: 5px;
-            transition: width 0.4s ease;
-        }
-
-        /* Filter Controls */
-        .filter-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 12px 20px;
-            align-items: center;
-        }
-        .filter-bar label {
-            font-size: 0.9rem;
-            color: #7a7a7a;
-        }
-        .filter-btn {
-            padding: 5px 14px;
-            border: 1px solid #d4cfc7;
-            border-radius: 16px;
-            background: white;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-family: inherit;
-            color: #5a5a5a;
-            transition: all 0.2s;
-        }
-        .filter-btn:hover { background: #f0ebe3; }
-        .filter-btn.active {
-            background: #6b8f71;
-            color: white;
-            border-color: #6b8f71;
-        }
-
-        /* Print Styles */
-        @media print {
-            .tabs-wrapper, .add-section, .item-actions, .filter-bar, .btn-add, header p { display: none !important; }
-            .room-content { display: block !important; page-break-after: always; }
-            .checklist-item { box-shadow: none; border: 1px solid #ccc; }
-            body { font-size: 14px; }
         }
 
         /* Responsive */
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.5rem; }
-            .tab { padding: 8px 12px; font-size: 0.9rem; }
-            .checklist-item { padding: 12px; }
-            .item-name { font-size: 1rem; }
-            .form-row { flex-direction: column; }
+        @media (min-width: 640px) {
+            .modal-overlay { align-items: center; }
+            .modal { border-radius: 20px; }
         }
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #aaa;
-            font-size: 0.85rem;
+        @media (max-width: 480px) {
+            header { padding: 20px 16px 16px; }
+            header h1 { font-size: 1.4rem; }
+            .progress-card { padding: 16px; }
+            .progress-pct { font-size: 1.25rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .checklist-item { padding: 12px; }
+            .item-actions { opacity: 1; }
+            .room-pill { padding: 7px 12px; font-size: 0.8rem; }
         }
+
+        /* Print */
+        @media print {
+            header, .room-nav, .filter-section, .add-section, .item-actions, .sync-status, .progress-section { display: none !important; }
+            .main-content { display: block !important; }
+            .checklist-item { box-shadow: none; border: 1px solid #ddd; }
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Drag handle hint */
+        .drag-handle {
+            color: #cbd5e1;
+            cursor: grab;
+            font-size: 1rem;
+            line-height: 1;
+            user-select: none;
+            padding: 2px;
+        }
+        .drag-handle:active { cursor: grabbing; }
     </style>
 </head>
 <body>
 
-<div class="save-banner" id="saveBanner">Changes saved!</div>
+<div class="toast" id="toast"></div>
 
 <header>
-    <h1>Mom's Moving Checklist</h1>
-    <p>Keep track of everything &mdash; room by room</p>
+    <div class="header-content">
+        <h1>Mom's Moving Checklist</h1>
+        <p>Room by room &mdash; everyone stays in sync</p>
+        <div class="sync-status">
+            <span class="sync-dot" id="syncDot"></span>
+            <span id="syncText">Checking connection...</span>
+        </div>
+    </div>
 </header>
 
-<!-- Overall Progress -->
-<div class="progress-container">
-    <div class="progress-label" id="progressLabel">0 of 0 items completed (0%)</div>
-    <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+<div class="progress-section">
+    <div class="progress-card">
+        <div class="progress-header">
+            <span class="progress-title">Overall Progress</span>
+            <span class="progress-pct" id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div class="progress-stats" id="progressStats"></div>
     </div>
 </div>
 
-<!-- Stats -->
-<div class="stats-bar" id="statsBar"></div>
-
-<!-- Filters -->
-<div class="filter-bar">
-    <label>Show:</label>
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="pending">Not Done</button>
-    <button class="filter-btn" data-filter="done">Done</button>
-    <button class="filter-btn" data-filter="garage">Garage</button>
-    <button class="filter-btn" data-filter="sell">Sell</button>
-    <button class="filter-btn" data-filter="give">Give Away</button>
-    <button class="filter-btn" data-filter="trash">Trash</button>
-    <button class="filter-btn" data-filter="unassigned">Unassigned</button>
+<div class="room-nav">
+    <div class="room-pills" id="roomPills"></div>
 </div>
 
-<!-- Room Tabs -->
-<div class="tabs-wrapper">
-    <div class="tabs" id="tabs"></div>
+<div class="filter-section">
+    <div class="filter-row">
+        <span class="filter-label">Filter:</span>
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="pending">To Do</button>
+        <button class="filter-chip" data-filter="done">Done</button>
+        <button class="filter-chip" data-filter="garage">Garage</button>
+        <button class="filter-chip" data-filter="sell">Sell</button>
+        <button class="filter-chip" data-filter="give">Give Away</button>
+        <button class="filter-chip" data-filter="trash">Trash</button>
+        <button class="filter-chip" data-filter="unassigned">No One Assigned</button>
+    </div>
 </div>
 
-<!-- Room Panels (generated by JS) -->
-<div id="roomPanels"></div>
+<div class="main-content" id="mainContent">
+    <div class="loading"><div class="spinner"></div></div>
+</div>
 
 <!-- Edit Modal -->
 <div class="modal-overlay" id="editModal">
     <div class="modal">
-        <h3>Edit Item</h3>
-        <div class="form-group">
-            <label>Item Name</label>
-            <input type="text" id="editName">
+        <h3 class="modal-title">Edit Item</h3>
+        <div class="form-grid">
+            <div class="input-group full-width">
+                <label>Item Name</label>
+                <input type="text" id="editName">
+            </div>
+            <div class="input-group">
+                <label>Assigned To</label>
+                <input type="text" id="editWho" placeholder="e.g. Greg, Mom, Scott">
+            </div>
+            <div class="input-group">
+                <label>Notes</label>
+                <input type="text" id="editNotes" placeholder="Optional">
+            </div>
+            <div class="input-group full-width">
+                <label>Category</label>
+                <div class="tag-options" id="editTags">
+                    <label class="tag-option" data-tag="garage">
+                        <input type="checkbox" id="editGarage"> Garage
+                    </label>
+                    <label class="tag-option" data-tag="sell">
+                        <input type="checkbox" id="editSell"> Sell
+                    </label>
+                    <label class="tag-option" data-tag="give">
+                        <input type="checkbox" id="editGive"> Give Away
+                    </label>
+                    <label class="tag-option" data-tag="trash">
+                        <input type="checkbox" id="editTrash"> Trash
+                    </label>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Assigned To</label>
-            <input type="text" id="editWho" placeholder="e.g. Greg, Mom, Scott...">
-        </div>
-        <div class="checkbox-row" style="margin-top:12px">
-            <label><input type="checkbox" id="editGarage"> Garage</label>
-            <label><input type="checkbox" id="editSell"> Sell</label>
-            <label><input type="checkbox" id="editGive"> Give Away</label>
-            <label><input type="checkbox" id="editTrash"> Trash</label>
-        </div>
-        <div class="form-group" style="margin-top:12px">
-            <label>Notes</label>
-            <input type="text" id="editNotes" placeholder="Optional notes...">
-        </div>
-        <div class="modal-buttons">
-            <button class="btn-save" onclick="saveEdit()">Save</button>
-            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <div class="form-buttons">
+            <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 </div>
 
-<footer>
-    Mom's Moving Checklist &mdash; Your data is saved in this browser automatically.
-</footer>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ==================== DATA ====================
+// ==================== CONFIGURATION ====================
+// STEP 1: Replace this with YOUR Firebase config (see setup instructions)
+const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCFpLoAF1e4gHREYg67M2cDox7XBu9767c",
+    authDomain: "grandma-checklist.firebaseapp.com",
+    databaseURL: "https://grandma-checklist-default-rtdb.firebaseio.com",
+    projectId: "grandma-checklist",
+    storageBucket: "grandma-checklist.firebasestorage.app",
+    messagingSenderId: "142038842400",
+    appId: "1:142038842400:web:e4903c25dffb9268941045"
+};
+
+const USE_FIREBASE = FIREBASE_CONFIG.apiKey !== "";
+
+// ==================== ROOMS & DEFAULT DATA ====================
 const ROOMS = [
     "Living Room", "Dining Room", "Kitchen", "Bathroom",
     "Main BR", "South BR", "West BR", "North BR",
@@ -553,155 +860,241 @@ const DEFAULT_DATA = {
 let data = {};
 let activeRoom = ROOMS[0];
 let activeFilter = "all";
-let editingItem = null; // { room, index }
+let editingItem = null;
+let db = null;
+let dbRef = null;
 
-// ==================== INIT ====================
-function init() {
-    loadData();
-    renderTabs();
-    renderAllRooms();
-    updateStats();
-    updateProgress();
-    setupFilterButtons();
+// ==================== FIREBASE ====================
+function initFirebase() {
+    if (!USE_FIREBASE) {
+        setSyncStatus("offline", "Local only (no Firebase)");
+        return;
+    }
+    try {
+        firebase.initializeApp(FIREBASE_CONFIG);
+        db = firebase.database();
+        dbRef = db.ref("checklist");
+
+        db.ref(".info/connected").on("value", (snap) => {
+            if (snap.val() === true) {
+                setSyncStatus("online", "Synced in real-time");
+            } else {
+                setSyncStatus("offline", "Offline - changes saved locally");
+            }
+        });
+
+        // Listen for real-time updates
+        dbRef.on("value", (snapshot) => {
+            const val = snapshot.val();
+            if (val) {
+                data = {};
+                for (const room of ROOMS) {
+                    data[room] = val[room] ? Object.values(val[room]) : [];
+                }
+                localStorage.setItem("movingChecklist", JSON.stringify(data));
+                refreshUI();
+            }
+        });
+    } catch (e) {
+        console.error("Firebase init failed:", e);
+        setSyncStatus("error", "Sync error - using local data");
+    }
 }
 
+function setSyncStatus(status, text) {
+    const dot = document.getElementById("syncDot");
+    const label = document.getElementById("syncText");
+    dot.className = "sync-dot " + status;
+    label.textContent = text;
+}
+
+// ==================== DATA LAYER ====================
 function loadData() {
     const saved = localStorage.getItem("movingChecklist");
     if (saved) {
         data = JSON.parse(saved);
-        // Ensure all rooms exist
         for (const room of ROOMS) {
             if (!data[room]) data[room] = [];
         }
     } else {
-        // First visit: load defaults
         for (const room of ROOMS) {
-            data[room] = DEFAULT_DATA[room] || [];
+            data[room] = DEFAULT_DATA[room] ? DEFAULT_DATA[room].map(i => ({...i})) : [];
         }
-        saveData();
+        saveData(true);
     }
 }
 
-function saveData() {
+function saveData(quiet) {
     localStorage.setItem("movingChecklist", JSON.stringify(data));
-    showSaveBanner();
+    if (USE_FIREBASE && dbRef) {
+        const fbData = {};
+        for (const room of ROOMS) {
+            fbData[room] = data[room] || [];
+        }
+        dbRef.set(fbData);
+    }
+    if (!quiet) showToast("Changes saved");
 }
 
-function showSaveBanner() {
-    const banner = document.getElementById("saveBanner");
-    banner.style.display = "block";
-    banner.style.animation = "none";
-    banner.offsetHeight; // trigger reflow
-    banner.style.animation = "fadeOut 2s ease-in-out forwards";
-    setTimeout(() => { banner.style.display = "none"; }, 2100);
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timeout);
+    t._timeout = setTimeout(() => t.classList.remove("show"), 2000);
 }
 
-// ==================== TABS ====================
-function renderTabs() {
-    const container = document.getElementById("tabs");
-    container.innerHTML = "";
+// ==================== RENDER ====================
+function renderRoomPills() {
+    const c = document.getElementById("roomPills");
+    c.innerHTML = "";
     for (const room of ROOMS) {
-        const count = data[room] ? data[room].length : 0;
-        const doneCount = data[room] ? data[room].filter(i => i.done).length : 0;
-        const tab = document.createElement("button");
-        tab.className = "tab" + (room === activeRoom ? " active" : "");
-        tab.textContent = room + (count > 0 ? ` (${doneCount}/${count})` : "");
-        tab.onclick = () => switchRoom(room);
-        container.appendChild(tab);
+        const items = data[room] || [];
+        const done = items.filter(i => i.done).length;
+        const total = items.length;
+        const pill = document.createElement("button");
+        pill.className = "room-pill" + (room === activeRoom ? " active" : "");
+        pill.innerHTML = `${esc(room)}` + (total > 0 ? ` <span class="pill-count">${done}/${total}</span>` : "");
+        pill.onclick = () => { activeRoom = room; refreshUI(); };
+        c.appendChild(pill);
     }
 }
 
-function switchRoom(room) {
-    activeRoom = room;
-    renderTabs();
-    document.querySelectorAll(".room-content").forEach(el => el.classList.remove("active"));
-    document.getElementById("room-" + slugify(room)).classList.add("active");
-}
+function renderMainContent() {
+    const c = document.getElementById("mainContent");
+    const items = data[activeRoom] || [];
+    const filtered = items.map((item, i) => ({item, i})).filter(({item}) => matchesFilter(item));
 
-function slugify(str) {
-    return str.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-}
+    let html = `<div class="room-header">
+        <h2 class="room-title">${esc(activeRoom)}</h2>
+        <span class="room-count">${filtered.length} item${filtered.length !== 1 ? 's' : ''}</span>
+    </div>`;
 
-// ==================== RENDER ROOMS ====================
-function renderAllRooms() {
-    const container = document.getElementById("roomPanels");
-    container.innerHTML = "";
-    for (const room of ROOMS) {
-        const panel = document.createElement("div");
-        panel.className = "room-content" + (room === activeRoom ? " active" : "");
-        panel.id = "room-" + slugify(room);
-        panel.innerHTML = renderRoomHTML(room);
-        container.appendChild(panel);
+    if (filtered.length === 0 && items.length === 0) {
+        html += `<div class="empty-state">
+            <div class="empty-icon">&#128230;</div>
+            <p>No items in this room yet.<br>Add one below!</p>
+        </div>`;
+    } else if (filtered.length === 0) {
+        html += `<div class="empty-state">
+            <div class="empty-icon">&#128269;</div>
+            <p>No items match this filter.</p>
+        </div>`;
     }
-}
 
-function renderRoomHTML(room) {
-    const items = data[room] || [];
-    let html = `<h2 class="room-title">${room}</h2>`;
     html += `<ul class="checklist">`;
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (!matchesFilter(item)) continue;
-        html += renderItemHTML(room, i, item);
+    for (const {item, i} of filtered) {
+        html += renderItem(activeRoom, i, item);
     }
     html += `</ul>`;
 
-    // Add new item form
-    const roomId = slugify(room);
+    // Add form
+    const rid = slugify(activeRoom);
     html += `
     <div class="add-section">
-        <h3>Add New Item</h3>
-        <div class="form-row">
-            <div class="form-group" style="flex:2">
-                <label>Item Name</label>
-                <input type="text" id="addName-${roomId}" placeholder="What needs to be done?">
+        <button class="add-toggle" onclick="toggleAddForm('${rid}')" id="addToggle-${rid}">
+            <span class="plus-icon">+</span> Add new item to ${esc(activeRoom)}
+        </button>
+        <div class="add-form" id="addForm-${rid}">
+            <div class="form-title">New Item</div>
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <label>What needs to be done?</label>
+                    <input type="text" id="addName-${rid}" placeholder="e.g. Pack dishes">
+                </div>
+                <div class="input-group">
+                    <label>Assigned To</label>
+                    <input type="text" id="addWho-${rid}" placeholder="e.g. Greg">
+                </div>
+                <div class="input-group">
+                    <label>Notes</label>
+                    <input type="text" id="addNotes-${rid}" placeholder="Optional">
+                </div>
+                <div class="input-group full-width">
+                    <label>Category</label>
+                    <div class="tag-options">
+                        <label class="tag-option" data-tag="garage" onclick="toggleTag(this)">
+                            <input type="checkbox" id="addGarage-${rid}"> Garage
+                        </label>
+                        <label class="tag-option" data-tag="sell" onclick="toggleTag(this)">
+                            <input type="checkbox" id="addSell-${rid}"> Sell
+                        </label>
+                        <label class="tag-option" data-tag="give" onclick="toggleTag(this)">
+                            <input type="checkbox" id="addGive-${rid}"> Give Away
+                        </label>
+                        <label class="tag-option" data-tag="trash" onclick="toggleTag(this)">
+                            <input type="checkbox" id="addTrash-${rid}"> Trash
+                        </label>
+                    </div>
+                </div>
             </div>
-            <div class="form-group" style="flex:1">
-                <label>Assigned To</label>
-                <input type="text" id="addWho-${roomId}" placeholder="e.g. Greg">
+            <div class="form-buttons">
+                <button class="btn btn-primary" onclick="addItem('${escAttr(activeRoom)}')">Add Item</button>
+                <button class="btn btn-secondary" onclick="toggleAddForm('${rid}')">Cancel</button>
             </div>
         </div>
-        <div class="checkbox-row">
-            <label><input type="checkbox" id="addGarage-${roomId}"> Garage</label>
-            <label><input type="checkbox" id="addSell-${roomId}"> Sell</label>
-            <label><input type="checkbox" id="addGive-${roomId}"> Give Away</label>
-            <label><input type="checkbox" id="addTrash-${roomId}"> Trash</label>
-        </div>
-        <div class="form-row" style="margin-top:8px">
-            <div class="form-group" style="flex:1">
-                <label>Notes</label>
-                <input type="text" id="addNotes-${roomId}" placeholder="Optional notes...">
-            </div>
-        </div>
-        <button class="btn-add" onclick="addItem('${room}')">Add Item</button>
     </div>`;
-    return html;
+
+    c.innerHTML = html;
 }
 
-function renderItemHTML(room, index, item) {
+function renderItem(room, index, item) {
     let tags = "";
-    if (item.who) tags += `<span class="tag tag-who">${escapeHtml(item.who)}</span>`;
+    if (item.who) tags += `<span class="tag tag-who">${esc(item.who)}</span>`;
     if (item.garage) tags += `<span class="tag tag-garage">Garage</span>`;
     if (item.sell) tags += `<span class="tag tag-sell">Sell</span>`;
     if (item.give) tags += `<span class="tag tag-give">Give Away</span>`;
     if (item.trash) tags += `<span class="tag tag-trash">Trash</span>`;
 
-    const notesHtml = item.notes ? ` <small style="color:#999">(${escapeHtml(item.notes)})</small>` : "";
+    const notes = item.notes ? `<div class="item-notes">${esc(item.notes)}</div>` : "";
 
     return `
     <li class="checklist-item ${item.done ? 'done' : ''}">
-        <input type="checkbox" class="item-check" ${item.done ? 'checked' : ''}
-            onchange="toggleDone('${escapeAttr(room)}', ${index})">
-        <span class="item-name">${escapeHtml(item.name)}${notesHtml}</span>
-        <div class="item-tags">${tags}</div>
+        <div class="custom-check ${item.done ? 'checked' : ''}" onclick="toggleDone('${escAttr(room)}', ${index})"></div>
+        <div class="item-body">
+            <div class="item-name">${esc(item.name)}</div>
+            ${tags ? `<div class="item-meta">${tags}</div>` : ''}
+            ${notes}
+        </div>
         <div class="item-actions">
-            <button class="btn-edit" onclick="openEdit('${escapeAttr(room)}', ${index})">Edit</button>
-            <button class="btn-delete" onclick="deleteItem('${escapeAttr(room)}', ${index})">Remove</button>
+            <button class="action-btn" onclick="openEdit('${escAttr(room)}', ${index})" title="Edit">&#9998;</button>
+            <button class="action-btn delete" onclick="deleteItem('${escAttr(room)}', ${index})" title="Remove">&times;</button>
         </div>
     </li>`;
 }
 
-// ==================== FILTERING ====================
+function updateProgress() {
+    let total = 0, done = 0, garage = 0, sell = 0, give = 0, trash = 0;
+    for (const room of ROOMS) {
+        for (const item of data[room] || []) {
+            total++;
+            if (item.done) done++;
+            if (item.garage) garage++;
+            if (item.sell) sell++;
+            if (item.give) give++;
+            if (item.trash) trash++;
+        }
+    }
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById("progressPct").textContent = pct + "%";
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressStats").innerHTML = `
+        <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--green-bg);color:var(--green);">&#10003;</span> ${done} done</span>
+        <span class="mini-stat"><span class="mini-stat-icon" style="background:#f1f5f9;color:#64748b;">&#9744;</span> ${total - done} left</span>
+        <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--orange-bg);color:#d97706;">G</span> ${garage}</span>
+        <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--red-bg);color:var(--red);">S</span> ${sell}</span>
+        <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--purple-bg);color:var(--purple);">&#9829;</span> ${give}</span>
+        <span class="mini-stat"><span class="mini-stat-icon" style="background:#f1f5f9;color:#475569;">T</span> ${trash}</span>
+    `;
+}
+
+function refreshUI() {
+    renderRoomPills();
+    renderMainContent();
+    updateProgress();
+}
+
+// ==================== FILTERS ====================
 function matchesFilter(item) {
     switch (activeFilter) {
         case "all": return true;
@@ -716,14 +1109,14 @@ function matchesFilter(item) {
     }
 }
 
-function setupFilterButtons() {
-    document.querySelectorAll(".filter-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+function setupFilters() {
+    document.querySelectorAll(".filter-chip").forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
             activeFilter = btn.dataset.filter;
-            renderAllRooms();
-        });
+            renderMainContent();
+        };
     });
 }
 
@@ -734,30 +1127,54 @@ function toggleDone(room, index) {
     refreshUI();
 }
 
+function toggleAddForm(rid) {
+    const form = document.getElementById("addForm-" + rid);
+    const toggle = document.getElementById("addToggle-" + rid);
+    const isOpen = form.classList.contains("open");
+    form.classList.toggle("open");
+    toggle.style.display = isOpen ? "" : "none";
+    if (!isOpen) {
+        const nameInput = document.getElementById("addName-" + rid);
+        if (nameInput) nameInput.focus();
+    }
+}
+
+function toggleTag(el) {
+    const cb = el.querySelector("input");
+    const tag = el.dataset.tag;
+    // Toggle happens automatically from label click
+    setTimeout(() => {
+        if (cb.checked) {
+            el.classList.add("selected-" + tag);
+        } else {
+            el.classList.remove("selected-" + tag);
+        }
+    }, 0);
+}
+
 function addItem(room) {
-    const roomId = slugify(room);
-    const nameEl = document.getElementById("addName-" + roomId);
+    const rid = slugify(room);
+    const nameEl = document.getElementById("addName-" + rid);
     const name = nameEl.value.trim();
     if (!name) { nameEl.focus(); return; }
 
-    const item = {
-        name: name,
-        who: document.getElementById("addWho-" + roomId).value.trim(),
-        garage: document.getElementById("addGarage-" + roomId).checked,
-        sell: document.getElementById("addSell-" + roomId).checked,
-        give: document.getElementById("addGive-" + roomId).checked,
-        trash: document.getElementById("addTrash-" + roomId).checked,
+    data[room].push({
+        name,
+        who: document.getElementById("addWho-" + rid).value.trim(),
+        garage: document.getElementById("addGarage-" + rid).checked,
+        sell: document.getElementById("addSell-" + rid).checked,
+        give: document.getElementById("addGive-" + rid).checked,
+        trash: document.getElementById("addTrash-" + rid).checked,
         done: false,
-        notes: document.getElementById("addNotes-" + roomId).value.trim(),
-    };
-
-    data[room].push(item);
+        notes: document.getElementById("addNotes-" + rid).value.trim(),
+    });
     saveData();
     refreshUI();
 }
 
 function deleteItem(room, index) {
-    if (!confirm("Remove \"" + data[room][index].name + "\"?")) return;
+    const name = data[room][index].name;
+    if (!confirm(`Remove "${name}"?`)) return;
     data[room].splice(index, 1);
     saveData();
     refreshUI();
@@ -768,11 +1185,19 @@ function openEdit(room, index) {
     const item = data[room][index];
     document.getElementById("editName").value = item.name;
     document.getElementById("editWho").value = item.who || "";
+    document.getElementById("editNotes").value = item.notes || "";
     document.getElementById("editGarage").checked = item.garage;
     document.getElementById("editSell").checked = item.sell;
     document.getElementById("editGive").checked = item.give;
     document.getElementById("editTrash").checked = item.trash;
-    document.getElementById("editNotes").value = item.notes || "";
+
+    // Update tag option visual states
+    document.querySelectorAll("#editTags .tag-option").forEach(el => {
+        const tag = el.dataset.tag;
+        const cb = el.querySelector("input");
+        el.classList.toggle("selected-" + tag, cb.checked);
+    });
+
     document.getElementById("editModal").classList.add("open");
 }
 
@@ -782,11 +1207,11 @@ function saveEdit() {
     const item = data[room][index];
     item.name = document.getElementById("editName").value.trim() || item.name;
     item.who = document.getElementById("editWho").value.trim();
+    item.notes = document.getElementById("editNotes").value.trim();
     item.garage = document.getElementById("editGarage").checked;
     item.sell = document.getElementById("editSell").checked;
     item.give = document.getElementById("editGive").checked;
     item.trash = document.getElementById("editTrash").checked;
-    item.notes = document.getElementById("editNotes").value.trim();
     saveData();
     closeModal();
     refreshUI();
@@ -797,103 +1222,52 @@ function closeModal() {
     editingItem = null;
 }
 
-// Close modal on outside click
+// Modal close on background click
 document.getElementById("editModal").addEventListener("click", (e) => {
     if (e.target === e.currentTarget) closeModal();
 });
 
-// ==================== STATS & PROGRESS ====================
-function updateStats() {
-    let total = 0, assigned = 0, garage = 0, sell = 0, give = 0, trash = 0, done = 0;
-    for (const room of ROOMS) {
-        for (const item of data[room] || []) {
-            total++;
-            if (item.who) assigned++;
-            if (item.garage) garage++;
-            if (item.sell) sell++;
-            if (item.give) give++;
-            if (item.trash) trash++;
-            if (item.done) done++;
-        }
-    }
-    document.getElementById("statsBar").innerHTML = `
-        <span class="stat"><span class="stat-dot dot-total"></span> ${total} Total</span>
-        <span class="stat"><span class="stat-dot dot-done"></span> ${done} Done</span>
-        <span class="stat"><span class="stat-dot dot-assigned"></span> ${assigned} Assigned</span>
-        <span class="stat"><span class="stat-dot dot-garage"></span> ${garage} Garage</span>
-        <span class="stat"><span class="stat-dot dot-sell"></span> ${sell} Sell</span>
-        <span class="stat"><span class="stat-dot dot-give"></span> ${give} Give Away</span>
-        <span class="stat"><span class="stat-dot dot-trash"></span> ${trash} Trash</span>
-    `;
-}
-
-function updateProgress() {
-    let total = 0, done = 0;
-    for (const room of ROOMS) {
-        for (const item of data[room] || []) {
-            total++;
-            if (item.done) done++;
-        }
-    }
-    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-    document.getElementById("progressLabel").textContent = `${done} of ${total} items completed (${pct}%)`;
-    document.getElementById("progressFill").style.width = pct + "%";
-}
-
-function refreshUI() {
-    renderTabs();
-    renderAllRooms();
-    updateStats();
-    updateProgress();
-    setupFilterButtons();
-}
+// Edit modal tag toggles
+document.querySelectorAll("#editTags .tag-option").forEach(el => {
+    el.addEventListener("click", () => {
+        const tag = el.dataset.tag;
+        const cb = el.querySelector("input");
+        setTimeout(() => {
+            el.classList.toggle("selected-" + tag, cb.checked);
+        }, 0);
+    });
+});
 
 // ==================== UTILITIES ====================
-function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-"); }
+function esc(s) {
+    const d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
 }
+function escAttr(s) { return s.replace(/'/g, "\\'").replace(/"/g, "&quot;"); }
 
-function escapeAttr(str) {
-    return str.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-}
-
-// ==================== DATA EXPORT/IMPORT ====================
-// Available via browser console: exportData() / importData(jsonString)
+// ==================== EXPORT / RESET ====================
 window.exportData = function() {
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "moving-checklist-backup.json";
-    a.click();
-    URL.revokeObjectURL(url);
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "moving-checklist-backup.json"; a.click();
 };
-
-window.importData = function(jsonString) {
-    try {
-        const imported = JSON.parse(jsonString);
-        data = imported;
-        saveData();
-        refreshUI();
-        alert("Data imported successfully!");
-    } catch (e) {
-        alert("Invalid JSON data");
-    }
-};
-
 window.resetData = function() {
-    if (confirm("This will reset ALL data back to the original spreadsheet. Are you sure?")) {
+    if (confirm("Reset ALL data to original spreadsheet?")) {
         localStorage.removeItem("movingChecklist");
-        loadData();
+        for (const room of ROOMS) { data[room] = DEFAULT_DATA[room] ? DEFAULT_DATA[room].map(i => ({...i})) : []; }
+        saveData(true);
         refreshUI();
+        showToast("Data reset to defaults");
     }
 };
 
-// ==================== START ====================
-init();
+// ==================== INIT ====================
+loadData();
+refreshUI();
+setupFilters();
+initFirebase();
 </script>
 
 </body>
