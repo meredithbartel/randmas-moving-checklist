@@ -33,9 +33,7 @@
             --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
             --shadow-lg: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg);
@@ -43,516 +41,216 @@
             font-size: 16px;
             line-height: 1.6;
             min-height: 100vh;
+            padding-bottom: 80px;
         }
 
-        /* Toast Notification */
+        /* Toast */
         .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--text);
-            color: white;
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            font-size: 0.875rem;
-            font-weight: 500;
-            z-index: 1000;
-            transform: translateY(100px);
-            opacity: 0;
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--text); color: white;
+            padding: 12px 20px; border-radius: var(--radius);
+            font-size: 0.875rem; font-weight: 500; z-index: 1000;
+            transform: translateY(100px); opacity: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: var(--shadow-lg);
         }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
+        .toast.show { transform: translateY(0); opacity: 1; }
 
         /* Header */
         header {
             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-            color: white;
-            padding: 28px 20px 20px;
-            position: relative;
-            overflow: hidden;
+            color: white; padding: 28px 20px 20px;
+            position: relative; overflow: hidden;
         }
         header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%;
+            content: ''; position: absolute; top: -50%; right: -20%;
+            width: 300px; height: 300px;
+            background: rgba(255,255,255,0.08); border-radius: 50%;
         }
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -60%;
-            left: -10%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-        }
-        .header-content {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        header p {
-            font-size: 0.95rem;
-            opacity: 0.85;
-            margin-top: 4px;
-            font-weight: 400;
-        }
+        .header-content { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+        header h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; }
+        header p { font-size: 0.95rem; opacity: 0.85; margin-top: 4px; }
         .sync-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 10px;
-            padding: 4px 12px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            backdrop-filter: blur(4px);
+            display: inline-flex; align-items: center; gap: 6px;
+            margin-top: 10px; padding: 4px 12px;
+            background: rgba(255,255,255,0.15); border-radius: 20px;
+            font-size: 0.8rem; backdrop-filter: blur(4px);
         }
-        .sync-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4ade80;
-        }
+        .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; }
         .sync-dot.offline { background: #fbbf24; }
         .sync-dot.error { background: #f87171; }
 
-        /* Progress Section */
-        .progress-section {
-            max-width: 800px;
-            margin: -16px auto 0;
-            padding: 0 16px;
-            position: relative;
-            z-index: 2;
+        /* Top-level page tabs */
+        .page-tabs {
+            max-width: 900px; margin: 0 auto;
+            display: flex; gap: 0; background: var(--card);
+            border-bottom: 2px solid var(--border);
+            position: sticky; top: 0; z-index: 50;
         }
+        .page-tab {
+            flex: 1; padding: 14px 8px; text-align: center;
+            font-size: 0.85rem; font-weight: 600; font-family: inherit;
+            background: none; border: none; cursor: pointer;
+            color: var(--text-secondary); transition: all 0.15s;
+            border-bottom: 3px solid transparent; margin-bottom: -2px;
+        }
+        .page-tab:hover { color: var(--primary); background: var(--primary-bg); }
+        .page-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .page-tab .tab-icon { display: block; font-size: 1.2rem; margin-bottom: 2px; }
+
+        .page-view { display: none; max-width: 900px; margin: 0 auto; padding: 0 16px; }
+        .page-view.active { display: block; }
+
+        /* ========== ROOMS PAGE ========== */
+        .progress-section { padding: 16px 0 0; }
         .progress-card {
-            background: var(--card);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow-md);
+            background: var(--card); border-radius: var(--radius);
+            padding: 20px; box-shadow: var(--shadow-md);
         }
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 10px;
-        }
-        .progress-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .progress-pct {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .progress-bar {
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-            border-radius: 4px;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .progress-stats {
-            display: flex;
-            gap: 16px;
-            margin-top: 14px;
-            flex-wrap: wrap;
-        }
-        .mini-stat {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-        .mini-stat-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-        }
+        .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+        .progress-title { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .progress-pct { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px; transition: width 0.5s; }
+        .progress-stats { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+        .mini-stat { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-secondary); }
+        .mini-stat-icon { width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
 
-        /* Room Navigation - Horizontal pills on mobile */
-        .room-nav {
-            max-width: 800px;
-            margin: 16px auto 0;
-            padding: 0 16px;
-        }
-        .room-pills {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 4px 0 12px;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
+        .room-nav { padding: 16px 0 0; }
+        .room-pills { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px; scrollbar-width: none; }
         .room-pills::-webkit-scrollbar { display: none; }
-
         .room-pill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 100px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-family: inherit;
-            font-weight: 500;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            transition: all 0.2s;
-            box-shadow: var(--shadow);
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 16px; background: var(--card); border: 2px solid var(--border);
+            border-radius: 100px; cursor: pointer; font-size: 0.875rem;
+            font-family: inherit; font-weight: 500; color: var(--text-secondary);
+            white-space: nowrap; transition: all 0.2s; box-shadow: var(--shadow);
         }
-        .room-pill:hover {
-            border-color: var(--primary-light);
-            color: var(--primary);
-        }
-        .room-pill.active {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-            box-shadow: 0 2px 8px rgba(99,102,241,0.3);
-        }
-        .room-pill .pill-count {
-            font-size: 0.75rem;
-            padding: 1px 7px;
-            border-radius: 10px;
-            background: rgba(0,0,0,0.08);
-            font-weight: 600;
-        }
-        .room-pill.active .pill-count {
-            background: rgba(255,255,255,0.25);
-        }
+        .room-pill:hover { border-color: var(--primary-light); color: var(--primary); }
+        .room-pill.active { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
+        .pill-count { font-size: 0.75rem; padding: 1px 7px; border-radius: 10px; background: rgba(0,0,0,0.08); font-weight: 600; }
+        .room-pill.active .pill-count { background: rgba(255,255,255,0.25); }
 
-        /* Filter Bar */
-        .filter-section {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 16px 8px;
-        }
-        .filter-row {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .filter-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-right: 4px;
-        }
+        .filter-section { padding: 0 0 8px; }
+        .filter-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .filter-label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; margin-right: 4px; }
         .filter-chip {
-            padding: 5px 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--card);
-            cursor: pointer;
-            font-size: 0.78rem;
-            font-family: inherit;
-            font-weight: 500;
-            color: var(--text-secondary);
-            transition: all 0.15s;
+            padding: 5px 12px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--card); cursor: pointer; font-size: 0.78rem;
+            font-family: inherit; font-weight: 500; color: var(--text-secondary); transition: all 0.15s;
         }
         .filter-chip:hover { border-color: var(--primary-light); color: var(--primary); }
-        .filter-chip.active {
-            background: var(--primary-bg);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        .filter-chip.active { background: var(--primary-bg); border-color: var(--primary); color: var(--primary); }
 
-        /* Main Content */
-        .main-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 8px 16px 32px;
-        }
+        .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .room-title { font-size: 1.25rem; font-weight: 700; }
+        .room-count { font-size: 0.85rem; color: var(--text-secondary); }
 
-        .room-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .room-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text);
-        }
-        .room-count {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* Checklist Items */
         .checklist { list-style: none; }
-
         .checklist-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 16px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 8px;
-            transition: all 0.2s;
-            cursor: default;
+            display: flex; align-items: flex-start; gap: 12px; padding: 16px;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); margin-bottom: 8px; transition: all 0.2s;
         }
-        .checklist-item:hover {
-            box-shadow: var(--shadow-md);
-            border-color: #cbd5e1;
-        }
-        .checklist-item.done {
-            background: #f8fafc;
-            border-color: #e2e8f0;
-        }
+        .checklist-item:hover { box-shadow: var(--shadow-md); border-color: #cbd5e1; }
+        .checklist-item.done { background: #f8fafc; border-color: #e2e8f0; }
         .checklist-item.done .item-text { opacity: 0.5; }
-        .checklist-item.done .item-name {
-            text-decoration: line-through;
-            color: var(--text-secondary);
-        }
+        .checklist-item.done .item-name { text-decoration: line-through; color: var(--text-secondary); }
 
-        /* Custom Checkbox */
         .custom-check {
-            width: 22px;
-            height: 22px;
-            min-width: 22px;
-            border: 2px solid #cbd5e1;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s;
-            margin-top: 1px;
+            width: 22px; height: 22px; min-width: 22px;
+            border: 2px solid #cbd5e1; border-radius: 6px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s; margin-top: 1px;
         }
         .custom-check:hover { border-color: var(--primary); }
-        .custom-check.checked {
-            background: var(--green);
-            border-color: var(--green);
-        }
+        .custom-check.checked { background: var(--green); border-color: var(--green); }
         .custom-check.checked::after {
-            content: '';
-            width: 6px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
+            content: ''; width: 6px; height: 10px;
+            border: solid white; border-width: 0 2px 2px 0;
             transform: rotate(45deg) translateY(-1px);
         }
 
-        .item-body {
-            flex: 1;
-            min-width: 0;
-        }
-        .item-name {
-            font-size: 0.95rem;
-            font-weight: 500;
-            word-break: break-word;
-        }
-        .item-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 6px;
-            align-items: center;
-        }
-        .item-notes {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            font-style: italic;
-        }
+        .item-body { flex: 1; min-width: 0; }
+        .item-name { font-size: 0.95rem; font-weight: 500; word-break: break-word; }
+        .item-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center; }
+        .item-notes { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; font-style: italic; }
 
-        /* Tags */
         .tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 10px;
-            border-radius: 6px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 10px; border-radius: 6px; font-size: 0.72rem;
+            font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase;
         }
         .tag-who { background: var(--blue-bg); color: var(--blue); }
         .tag-garage { background: var(--orange-bg); color: #d97706; }
         .tag-sell { background: var(--red-bg); color: var(--red); }
         .tag-give { background: var(--purple-bg); color: var(--purple); }
         .tag-trash { background: #f1f5f9; color: #475569; }
+        .tag-date { background: var(--primary-bg); color: var(--primary); }
+        .tag-overdue { background: var(--red-bg); color: var(--red); }
 
-        /* Item Actions */
-        .item-actions {
-            display: flex;
-            gap: 4px;
-            opacity: 0;
-            transition: opacity 0.15s;
-        }
+        .item-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
         .checklist-item:hover .item-actions { opacity: 1; }
-
         .action-btn {
-            width: 32px;
-            height: 32px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--card);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            transition: all 0.15s;
+            width: 32px; height: 32px; border: 1px solid var(--border);
+            border-radius: 8px; background: var(--card); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; color: var(--text-secondary); transition: all 0.15s;
         }
         .action-btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
         .action-btn.delete:hover { background: var(--red-bg); border-color: #fecaca; color: var(--red); }
 
-        /* Add Item Section */
-        .add-section {
-            margin-top: 16px;
-        }
+        .add-section { margin-top: 16px; }
         .add-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 18px;
-            background: var(--card);
-            border: 2px dashed var(--border);
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-family: inherit;
-            font-weight: 500;
-            color: var(--text-secondary);
-            width: 100%;
-            transition: all 0.2s;
+            display: flex; align-items: center; gap: 8px; padding: 14px 18px;
+            background: var(--card); border: 2px dashed var(--border);
+            border-radius: var(--radius); cursor: pointer; font-size: 0.9rem;
+            font-family: inherit; font-weight: 500; color: var(--text-secondary);
+            width: 100%; transition: all 0.2s;
         }
-        .add-toggle:hover {
-            border-color: var(--primary-light);
-            color: var(--primary);
-            background: var(--primary-bg);
-        }
-        .add-toggle .plus-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 8px;
-            background: var(--primary-bg);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            font-weight: 600;
+        .add-toggle:hover { border-color: var(--primary-light); color: var(--primary); background: var(--primary-bg); }
+        .plus-icon {
+            width: 24px; height: 24px; border-radius: 8px;
+            background: var(--primary-bg); color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 600;
         }
 
         .add-form {
-            display: none;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow-md);
+            display: none; background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-md);
             animation: slideDown 0.2s ease;
         }
         .add-form.open { display: block; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 14px;
-            color: var(--text);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+        .form-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 14px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .form-grid .full-width { grid-column: 1 / -1; }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        .input-group { display: flex; flex-direction: column; gap: 4px; }
         .input-group label {
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 0.78rem; font-weight: 600; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .input-group input[type="text"] {
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-family: inherit;
-            background: var(--bg);
-            color: var(--text);
-            transition: all 0.15s;
+        .input-group input[type="text"],
+        .input-group input[type="date"],
+        .input-group input[type="number"],
+        .input-group select {
+            padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
+            font-size: 0.9rem; font-family: inherit; background: var(--bg);
+            color: var(--text); transition: all 0.15s;
         }
-        .input-group input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
-            background: var(--card);
+        .input-group input:focus, .input-group select:focus {
+            outline: none; border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1); background: var(--card);
         }
 
-        .tag-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 4px;
-        }
+        .tag-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
         .tag-option {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            transition: all 0.15s;
-            user-select: none;
+            display: flex; align-items: center; gap: 6px; padding: 6px 14px;
+            border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+            font-size: 0.82rem; font-weight: 500; color: var(--text-secondary);
+            transition: all 0.15s; user-select: none;
         }
         .tag-option:hover { border-color: #cbd5e1; }
         .tag-option input { display: none; }
@@ -561,95 +259,130 @@
         .tag-option.selected-give { background: var(--purple-bg); border-color: #d8b4fe; color: var(--purple); }
         .tag-option.selected-trash { background: #f1f5f9; border-color: #cbd5e1; color: #475569; }
 
-        .form-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
+        .form-buttons { display: flex; gap: 8px; margin-top: 16px; }
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
+            padding: 10px 20px; border: none; border-radius: 8px;
+            font-size: 0.875rem; font-family: inherit; font-weight: 600;
+            cursor: pointer; transition: all 0.15s;
         }
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
+        .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: #4f46e5; }
-        .btn-secondary {
-            background: #f1f5f9;
-            color: var(--text-secondary);
-        }
+        .btn-secondary { background: #f1f5f9; color: var(--text-secondary); }
         .btn-secondary:hover { background: #e2e8f0; }
+        .btn-danger { background: var(--red); color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
 
         /* Modal */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15,23,42,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            justify-content: center;
-            align-items: flex-end;
-            padding: 16px;
+            display: none; position: fixed; inset: 0;
+            background: rgba(15,23,42,0.5); backdrop-filter: blur(4px);
+            z-index: 999; justify-content: center; align-items: flex-end; padding: 16px;
         }
-        .modal-overlay.open {
-            display: flex;
-            animation: fadeIn 0.2s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal {
-            background: var(--card);
-            border-radius: 20px 20px 16px 16px;
-            padding: 24px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-height: 90vh;
-            overflow-y: auto;
+            background: var(--card); border-radius: 20px 20px 16px 16px;
+            padding: 24px; width: 100%; max-width: 500px;
+            box-shadow: var(--shadow-lg); animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 90vh; overflow-y: auto;
         }
-        @keyframes slideUp {
-            from { transform: translateY(40px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; }
 
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+        .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+        .empty-state p { font-size: 0.9rem; }
+
+        /* ========== TIMELINE PAGE ========== */
+        .timeline-section { padding: 16px 0; }
+        .timeline-group { margin-bottom: 24px; }
+        .timeline-date-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 10px; padding-bottom: 6px;
+            border-bottom: 2px solid var(--border);
         }
-        .empty-state .empty-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-            opacity: 0.4;
+        .timeline-date-label {
+            font-size: 0.95rem; font-weight: 700; color: var(--text);
         }
-        .empty-state p {
-            font-size: 0.9rem;
+        .timeline-date-badge {
+            font-size: 0.72rem; font-weight: 600; padding: 2px 10px;
+            border-radius: 6px; text-transform: uppercase;
         }
+        .badge-overdue { background: var(--red-bg); color: var(--red); }
+        .badge-today { background: var(--green-bg); color: var(--green); }
+        .badge-upcoming { background: var(--blue-bg); color: var(--blue); }
+        .badge-nodate { background: #f1f5f9; color: var(--text-secondary); }
+
+        .timeline-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; background: var(--card);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            margin-bottom: 6px; transition: all 0.2s;
+        }
+        .timeline-item:hover { box-shadow: var(--shadow-md); }
+        .timeline-item.done { opacity: 0.5; }
+        .timeline-item.done .tl-name { text-decoration: line-through; }
+        .tl-body { flex: 1; min-width: 0; }
+        .tl-name { font-size: 0.9rem; font-weight: 500; }
+        .tl-detail { font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px; }
+
+        /* ========== BUDGET PAGE ========== */
+        .budget-section { padding: 16px 0; }
+
+        .budget-summary {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px; margin-bottom: 24px;
+        }
+        .summary-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        .summary-card-label {
+            font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 4px;
+        }
+        .summary-card-value { font-size: 1.5rem; font-weight: 700; }
+        .summary-card-value.green { color: var(--green); }
+        .summary-card-value.red { color: var(--red); }
+        .summary-card-value.blue { color: var(--blue); }
+        .summary-card-value.purple { color: var(--purple); }
+
+        .budget-category { margin-bottom: 28px; }
+        .budget-cat-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; padding-bottom: 6px;
+            border-bottom: 2px solid var(--border);
+        }
+        .budget-cat-title { font-size: 1.05rem; font-weight: 700; }
+        .budget-cat-total { font-size: 1rem; font-weight: 700; color: var(--primary); }
+
+        .expense-list { list-style: none; }
+        .expense-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); margin-bottom: 6px;
+        }
+        .expense-item:hover { box-shadow: var(--shadow-md); }
+        .exp-body { flex: 1; }
+        .exp-name { font-size: 0.9rem; font-weight: 500; }
+        .exp-detail { font-size: 0.78rem; color: var(--text-secondary); }
+        .exp-amount { font-size: 1rem; font-weight: 700; white-space: nowrap; }
+        .exp-amount.income { color: var(--green); }
+        .exp-amount.expense { color: var(--red); }
+        .exp-paid {
+            font-size: 0.7rem; font-weight: 600; padding: 2px 8px;
+            border-radius: 6px; text-transform: uppercase;
+        }
+        .exp-paid.yes { background: var(--green-bg); color: var(--green); }
+        .exp-paid.no { background: var(--orange-bg); color: #d97706; }
 
         /* Responsive */
         @media (min-width: 640px) {
             .modal-overlay { align-items: center; }
             .modal { border-radius: 20px; }
         }
-
         @media (max-width: 480px) {
             header { padding: 20px 16px 16px; }
             header h1 { font-size: 1.4rem; }
@@ -659,41 +392,12 @@
             .checklist-item { padding: 12px; }
             .item-actions { opacity: 1; }
             .room-pill { padding: 7px 12px; font-size: 0.8rem; }
+            .page-tab { padding: 10px 4px; font-size: 0.78rem; }
+            .budget-summary { grid-template-columns: 1fr 1fr; }
         }
-
-        /* Print */
         @media print {
-            header, .room-nav, .filter-section, .add-section, .item-actions, .sync-status, .progress-section { display: none !important; }
-            .main-content { display: block !important; }
-            .checklist-item { box-shadow: none; border: 1px solid #ddd; }
+            header, .page-tabs, .add-section, .item-actions, .sync-status, .filter-section { display: none !important; }
         }
-
-        /* Loading spinner */
-        .loading {
-            display: flex;
-            justify-content: center;
-            padding: 40px;
-        }
-        .spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Drag handle hint */
-        .drag-handle {
-            color: #cbd5e1;
-            cursor: grab;
-            font-size: 1rem;
-            line-height: 1;
-            user-select: none;
-            padding: 2px;
-        }
-        .drag-handle:active { cursor: grabbing; }
     </style>
 </head>
 <body>
@@ -711,42 +415,76 @@
     </div>
 </header>
 
-<div class="progress-section">
-    <div class="progress-card">
-        <div class="progress-header">
-            <span class="progress-title">Overall Progress</span>
-            <span class="progress-pct" id="progressPct">0%</span>
+<!-- Page Navigation -->
+<div class="page-tabs" id="pageTabs">
+    <button class="page-tab active" data-page="rooms">
+        <span class="tab-icon">&#127968;</span> Rooms
+    </button>
+    <button class="page-tab" data-page="timeline">
+        <span class="tab-icon">&#128197;</span> Timeline
+    </button>
+    <button class="page-tab" data-page="budget">
+        <span class="tab-icon">&#128176;</span> Budget
+    </button>
+</div>
+
+<!-- ==================== ROOMS PAGE ==================== -->
+<div class="page-view active" id="page-rooms">
+    <div class="progress-section">
+        <div class="progress-card">
+            <div class="progress-header">
+                <span class="progress-title">Overall Progress</span>
+                <span class="progress-pct" id="progressPct">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-stats" id="progressStats"></div>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+    <div class="room-nav">
+        <div class="room-pills" id="roomPills"></div>
+    </div>
+    <div class="filter-section">
+        <div class="filter-row">
+            <span class="filter-label">Filter:</span>
+            <button class="filter-chip active" data-filter="all">All</button>
+            <button class="filter-chip" data-filter="pending">To Do</button>
+            <button class="filter-chip" data-filter="done">Done</button>
+            <button class="filter-chip" data-filter="garage">Garage</button>
+            <button class="filter-chip" data-filter="sell">Sell</button>
+            <button class="filter-chip" data-filter="give">Give Away</button>
+            <button class="filter-chip" data-filter="trash">Trash</button>
+            <button class="filter-chip" data-filter="unassigned">No One Assigned</button>
         </div>
-        <div class="progress-stats" id="progressStats"></div>
+    </div>
+    <div id="mainContent"></div>
+</div>
+
+<!-- ==================== TIMELINE PAGE ==================== -->
+<div class="page-view" id="page-timeline">
+    <div class="timeline-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h2 style="font-size:1.25rem;font-weight:700;">Moving Timeline</h2>
+            <button class="btn btn-primary btn-sm" onclick="openTimelineModal()">+ Add Task</button>
+        </div>
+        <div id="timelineContent"></div>
     </div>
 </div>
 
-<div class="room-nav">
-    <div class="room-pills" id="roomPills"></div>
-</div>
-
-<div class="filter-section">
-    <div class="filter-row">
-        <span class="filter-label">Filter:</span>
-        <button class="filter-chip active" data-filter="all">All</button>
-        <button class="filter-chip" data-filter="pending">To Do</button>
-        <button class="filter-chip" data-filter="done">Done</button>
-        <button class="filter-chip" data-filter="garage">Garage</button>
-        <button class="filter-chip" data-filter="sell">Sell</button>
-        <button class="filter-chip" data-filter="give">Give Away</button>
-        <button class="filter-chip" data-filter="trash">Trash</button>
-        <button class="filter-chip" data-filter="unassigned">No One Assigned</button>
+<!-- ==================== BUDGET PAGE ==================== -->
+<div class="page-view" id="page-budget">
+    <div class="budget-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h2 style="font-size:1.25rem;font-weight:700;">Moving Budget</h2>
+            <button class="btn btn-primary btn-sm" onclick="openExpenseModal()">+ Add Expense</button>
+        </div>
+        <div class="budget-summary" id="budgetSummary"></div>
+        <div id="budgetContent"></div>
     </div>
 </div>
 
-<div class="main-content" id="mainContent">
-    <div class="loading"><div class="spinner"></div></div>
-</div>
-
-<!-- Edit Modal -->
+<!-- Edit Checklist Item Modal -->
 <div class="modal-overlay" id="editModal">
     <div class="modal">
         <h3 class="modal-title">Edit Item</h3>
@@ -766,24 +504,93 @@
             <div class="input-group full-width">
                 <label>Category</label>
                 <div class="tag-options" id="editTags">
-                    <label class="tag-option" data-tag="garage">
-                        <input type="checkbox" id="editGarage"> Garage
-                    </label>
-                    <label class="tag-option" data-tag="sell">
-                        <input type="checkbox" id="editSell"> Sell
-                    </label>
-                    <label class="tag-option" data-tag="give">
-                        <input type="checkbox" id="editGive"> Give Away
-                    </label>
-                    <label class="tag-option" data-tag="trash">
-                        <input type="checkbox" id="editTrash"> Trash
-                    </label>
+                    <label class="tag-option" data-tag="garage"><input type="checkbox" id="editGarage"> Garage</label>
+                    <label class="tag-option" data-tag="sell"><input type="checkbox" id="editSell"> Sell</label>
+                    <label class="tag-option" data-tag="give"><input type="checkbox" id="editGive"> Give Away</label>
+                    <label class="tag-option" data-tag="trash"><input type="checkbox" id="editTrash"> Trash</label>
                 </div>
             </div>
         </div>
         <div class="form-buttons">
             <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
-            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Timeline Task Modal -->
+<div class="modal-overlay" id="timelineModal">
+    <div class="modal">
+        <h3 class="modal-title" id="timelineModalTitle">Add Task</h3>
+        <div class="form-grid">
+            <div class="input-group full-width">
+                <label>Task Name</label>
+                <input type="text" id="tlName" placeholder="e.g. Hire movers, Pack kitchen...">
+            </div>
+            <div class="input-group">
+                <label>Due Date</label>
+                <input type="date" id="tlDate">
+            </div>
+            <div class="input-group">
+                <label>Assigned To</label>
+                <input type="text" id="tlWho" placeholder="e.g. Mom, Greg">
+            </div>
+            <div class="input-group full-width">
+                <label>Notes</label>
+                <input type="text" id="tlNotes" placeholder="Optional details">
+            </div>
+        </div>
+        <div class="form-buttons">
+            <button class="btn btn-primary" onclick="saveTimelineItem()">Save Task</button>
+            <button class="btn btn-secondary" onclick="closeModal('timelineModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Expense Modal -->
+<div class="modal-overlay" id="expenseModal">
+    <div class="modal">
+        <h3 class="modal-title" id="expenseModalTitle">Add Expense</h3>
+        <div class="form-grid">
+            <div class="input-group full-width">
+                <label>Description</label>
+                <input type="text" id="expName" placeholder="e.g. Moving truck rental">
+            </div>
+            <div class="input-group">
+                <label>Amount ($)</label>
+                <input type="number" id="expAmount" step="0.01" min="0" placeholder="0.00">
+            </div>
+            <div class="input-group">
+                <label>Category</label>
+                <select id="expCategory">
+                    <option value="Moving Costs">Moving Costs</option>
+                    <option value="Supplies">Packing Supplies</option>
+                    <option value="Repairs">Repairs & Fixes</option>
+                    <option value="Utilities">Utilities / Setup</option>
+                    <option value="Monthly Bills">Monthly Bills</option>
+                    <option value="Income">Income (Sold Items)</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Date</label>
+                <input type="date" id="expDate">
+            </div>
+            <div class="input-group">
+                <label>Paid?</label>
+                <select id="expPaid">
+                    <option value="no">Not Yet</option>
+                    <option value="yes">Paid</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Notes</label>
+                <input type="text" id="expNotes" placeholder="Optional">
+            </div>
+        </div>
+        <div class="form-buttons">
+            <button class="btn btn-primary" onclick="saveExpense()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('expenseModal')">Cancel</button>
         </div>
     </div>
 </div>
@@ -793,8 +600,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ==================== CONFIGURATION ====================
-// STEP 1: Replace this with YOUR Firebase config (see setup instructions)
+// ==================== CONFIG ====================
 const FIREBASE_CONFIG = {
     apiKey: "AIzaSyCFpLoAF1e4gHREYg67M2cDox7XBu9767c",
     authDomain: "grandma-checklist.firebaseapp.com",
@@ -804,227 +610,214 @@ const FIREBASE_CONFIG = {
     messagingSenderId: "142038842400",
     appId: "1:142038842400:web:e4903c25dffb9268941045"
 };
-
 const USE_FIREBASE = FIREBASE_CONFIG.apiKey !== "";
 
-// ==================== ROOMS & DEFAULT DATA ====================
 const ROOMS = [
-    "Living Room", "Dining Room", "Kitchen", "Bathroom",
-    "Main BR", "South BR", "West BR", "North BR",
-    "Laundry", "H2O Softener", "Furnace", "Shop",
-    "Cellar", "Garage", "Shed"
+    "Living Room","Dining Room","Kitchen","Bathroom",
+    "Main BR","South BR","West BR","North BR",
+    "Laundry","H2O Softener","Furnace","Shop",
+    "Cellar","Garage","Shed"
 ];
 
 const DEFAULT_DATA = {
     "Living Room": [
-        { name: "Wall bubble left of fireplace", who: "Greg", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Christmas Tree", who: "", garage: true, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Roll top desk", who: "", garage: false, sell: true, give: false, trash: false, done: false, notes: "" },
-        { name: "Bench seat by front door", who: "", garage: false, sell: true, give: false, trash: false, done: false, notes: "?" },
-        { name: "Clean out front closet", who: "Mom", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Take down decorations", who: "Mom", garage: true, sell: false, give: false, trash: false, done: false, notes: "?" },
-        { name: "Ceiling repair (Back Door)", who: "Greg", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Replace Front Door", who: "Scott", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Clean storage area Upstairs", who: "Scott", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Move Sink to Garage", who: "", garage: true, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Paint Threshold near stairs", who: "Greg", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Expand Dining Table", who: "Linda", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Old Recliner", who: "", garage: false, sell: false, give: true, trash: false, done: false, notes: "" },
-        { name: "Remove Medicine Cabinet", who: "Scott", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Replace Light Fixture", who: "Scott", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Buy Light Bulbs", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Tall Dresser Bedroom", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Generator Details", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Cedar Chest (basement)", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Cabinet Hutch", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Antique Small Desk", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "End Tables", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Lamps", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name:"Wall bubble left of fireplace", who:"Greg", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Christmas Tree", who:"", garage:true, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Roll top desk", who:"", garage:false, sell:true, give:false, trash:false, done:false, notes:"" },
+        { name:"Bench seat by front door", who:"", garage:false, sell:true, give:false, trash:false, done:false, notes:"?" },
+        { name:"Clean out front closet", who:"Mom", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Take down decorations", who:"Mom", garage:true, sell:false, give:false, trash:false, done:false, notes:"?" },
+        { name:"Ceiling repair (Back Door)", who:"Greg", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Replace Front Door", who:"Scott", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Clean storage area Upstairs", who:"Scott", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Move Sink to Garage", who:"", garage:true, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Paint Threshold near stairs", who:"Greg", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Expand Dining Table", who:"Linda", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Old Recliner", who:"", garage:false, sell:false, give:true, trash:false, done:false, notes:"" },
+        { name:"Remove Medicine Cabinet", who:"Scott", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Replace Light Fixture", who:"Scott", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Buy Light Bulbs", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Tall Dresser Bedroom", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Generator Details", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Cedar Chest (basement)", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Cabinet Hutch", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Antique Small Desk", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"End Tables", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Lamps", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
     ],
     "Dining Room": [
-        { name: "Recliner chair", who: "", garage: false, sell: true, give: false, trash: false, done: false, notes: "" },
-        { name: "Remove power strip", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Stretch dining room table", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
-        { name: "Pack up most items from curio cabinet", who: "", garage: false, sell: false, give: true, trash: false, done: false, notes: "?" },
-        { name: "Grandfather clock", who: "", garage: false, sell: false, give: true, trash: false, done: false, notes: "?" },
+        { name:"Recliner chair", who:"", garage:false, sell:true, give:false, trash:false, done:false, notes:"" },
+        { name:"Remove power strip", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Stretch dining room table", who:"", garage:false, sell:false, give:false, trash:false, done:false, notes:"" },
+        { name:"Pack up most items from curio cabinet", who:"", garage:false, sell:false, give:true, trash:false, done:false, notes:"?" },
+        { name:"Grandfather clock", who:"", garage:false, sell:false, give:true, trash:false, done:false, notes:"?" },
     ],
     "Shop": [
-        { name: "Cast iron stove", who: "", garage: false, sell: true, give: false, trash: false, done: false, notes: "" },
+        { name:"Cast iron stove", who:"", garage:false, sell:true, give:false, trash:false, done:false, notes:"" },
     ],
     "Cellar": [
-        { name: "Glass jars", who: "", garage: false, sell: false, give: true, trash: false, done: false, notes: "" },
+        { name:"Glass jars", who:"", garage:false, sell:false, give:true, trash:false, done:false, notes:"" },
     ],
 };
 
+const DEFAULT_TIMELINE = [
+    { name:"Sort items in each room", date:"", who:"Everyone", done:false, notes:"Go room by room and decide keep/sell/give/trash" },
+    { name:"Get moving quotes", date:"", who:"", done:false, notes:"Call at least 3 companies" },
+    { name:"Start packing non-essentials", date:"", who:"", done:false, notes:"" },
+    { name:"Hold garage sale", date:"", who:"", done:false, notes:"Sell marked items" },
+    { name:"Hire movers", date:"", who:"", done:false, notes:"" },
+    { name:"Change address with post office", date:"", who:"Mom", done:false, notes:"" },
+    { name:"Transfer utilities", date:"", who:"", done:false, notes:"Electric, gas, water, internet" },
+    { name:"Final walkthrough & clean", date:"", who:"Everyone", done:false, notes:"" },
+    { name:"Moving day", date:"", who:"Everyone", done:false, notes:"" },
+];
+
+const DEFAULT_EXPENSES = [
+    { name:"Moving truck / movers", amount:0, category:"Moving Costs", date:"", paid:"no", notes:"Get quotes" },
+    { name:"Packing boxes", amount:0, category:"Supplies", date:"", paid:"no", notes:"" },
+    { name:"Bubble wrap & tape", amount:0, category:"Supplies", date:"", paid:"no", notes:"" },
+];
+
 // ==================== STATE ====================
 let data = {};
+let timeline = [];
+let expenses = [];
 let activeRoom = ROOMS[0];
 let activeFilter = "all";
+let activePage = "rooms";
 let editingItem = null;
+let editingTlIdx = null;
+let editingExpIdx = null;
 let db = null;
-let dbRef = null;
 
 // ==================== FIREBASE ====================
 function initFirebase() {
-    if (!USE_FIREBASE) {
-        setSyncStatus("offline", "Local only (no Firebase)");
-        return;
-    }
+    if (!USE_FIREBASE) { setSyncStatus("offline","Local only (no Firebase)"); return; }
     try {
         firebase.initializeApp(FIREBASE_CONFIG);
         db = firebase.database();
-        dbRef = db.ref("checklist");
-
-        db.ref(".info/connected").on("value", (snap) => {
-            if (snap.val() === true) {
-                setSyncStatus("online", "Synced in real-time");
-            } else {
-                setSyncStatus("offline", "Offline - changes saved locally");
-            }
+        db.ref(".info/connected").on("value", snap => {
+            setSyncStatus(snap.val() ? "online" : "offline",
+                snap.val() ? "Synced in real-time" : "Offline - saved locally");
         });
-
-        // Listen for real-time updates
-        dbRef.on("value", (snapshot) => {
+        // Listen to all data
+        db.ref("app").on("value", snapshot => {
             const val = snapshot.val();
-            if (val) {
+            if (!val) return;
+            if (val.checklist) {
                 data = {};
-                for (const room of ROOMS) {
-                    data[room] = val[room] ? Object.values(val[room]) : [];
-                }
-                localStorage.setItem("movingChecklist", JSON.stringify(data));
-                refreshUI();
+                for (const room of ROOMS) data[room] = val.checklist[room] ? Object.values(val.checklist[room]) : [];
             }
+            if (val.timeline) timeline = Object.values(val.timeline);
+            if (val.expenses) expenses = Object.values(val.expenses);
+            localStorage.setItem("appData", JSON.stringify({ checklist: data, timeline, expenses }));
+            fullRefresh();
         });
     } catch (e) {
         console.error("Firebase init failed:", e);
-        setSyncStatus("error", "Sync error - using local data");
+        setSyncStatus("error","Sync error - using local data");
     }
 }
 
-function setSyncStatus(status, text) {
-    const dot = document.getElementById("syncDot");
-    const label = document.getElementById("syncText");
-    dot.className = "sync-dot " + status;
-    label.textContent = text;
+function setSyncStatus(s, t) {
+    document.getElementById("syncDot").className = "sync-dot " + s;
+    document.getElementById("syncText").textContent = t;
 }
 
 // ==================== DATA LAYER ====================
-function loadData() {
-    const saved = localStorage.getItem("movingChecklist");
+function loadAll() {
+    const saved = localStorage.getItem("appData");
     if (saved) {
-        data = JSON.parse(saved);
-        for (const room of ROOMS) {
-            if (!data[room]) data[room] = [];
-        }
+        const parsed = JSON.parse(saved);
+        data = parsed.checklist || {};
+        timeline = parsed.timeline || [];
+        expenses = parsed.expenses || [];
+        for (const room of ROOMS) { if (!data[room]) data[room] = []; }
     } else {
-        for (const room of ROOMS) {
-            data[room] = DEFAULT_DATA[room] ? DEFAULT_DATA[room].map(i => ({...i})) : [];
-        }
-        saveData(true);
+        for (const room of ROOMS) data[room] = DEFAULT_DATA[room] ? DEFAULT_DATA[room].map(i=>({...i})) : [];
+        timeline = DEFAULT_TIMELINE.map(i=>({...i}));
+        expenses = DEFAULT_EXPENSES.map(i=>({...i}));
+        saveAll(true);
     }
 }
 
-function saveData(quiet) {
-    localStorage.setItem("movingChecklist", JSON.stringify(data));
-    if (USE_FIREBASE && dbRef) {
-        const fbData = {};
-        for (const room of ROOMS) {
-            fbData[room] = data[room] || [];
-        }
-        dbRef.set(fbData);
+function saveAll(quiet) {
+    localStorage.setItem("appData", JSON.stringify({ checklist: data, timeline, expenses }));
+    if (USE_FIREBASE && db) {
+        db.ref("app").set({ checklist: data, timeline, expenses });
     }
     if (!quiet) showToast("Changes saved");
 }
 
 function showToast(msg) {
     const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    clearTimeout(t._timeout);
-    t._timeout = setTimeout(() => t.classList.remove("show"), 2000);
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._to); t._to = setTimeout(() => t.classList.remove("show"), 2000);
 }
 
-// ==================== RENDER ====================
+// ==================== PAGE NAVIGATION ====================
+function setupPageTabs() {
+    document.querySelectorAll(".page-tab").forEach(tab => {
+        tab.onclick = () => {
+            document.querySelectorAll(".page-tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".page-view").forEach(v => v.classList.remove("active"));
+            tab.classList.add("active");
+            activePage = tab.dataset.page;
+            document.getElementById("page-" + activePage).classList.add("active");
+            fullRefresh();
+        };
+    });
+}
+
+// ==================== ROOMS RENDERING ====================
 function renderRoomPills() {
-    const c = document.getElementById("roomPills");
-    c.innerHTML = "";
+    const c = document.getElementById("roomPills"); c.innerHTML = "";
     for (const room of ROOMS) {
-        const items = data[room] || [];
-        const done = items.filter(i => i.done).length;
-        const total = items.length;
+        const items = data[room]||[], done = items.filter(i=>i.done).length, total = items.length;
         const pill = document.createElement("button");
-        pill.className = "room-pill" + (room === activeRoom ? " active" : "");
-        pill.innerHTML = `${esc(room)}` + (total > 0 ? ` <span class="pill-count">${done}/${total}</span>` : "");
-        pill.onclick = () => { activeRoom = room; refreshUI(); };
+        pill.className = "room-pill" + (room===activeRoom?" active":"");
+        pill.innerHTML = esc(room) + (total>0?` <span class="pill-count">${done}/${total}</span>`:"");
+        pill.onclick = () => { activeRoom=room; renderRoomPills(); renderMainContent(); };
         c.appendChild(pill);
     }
 }
 
 function renderMainContent() {
     const c = document.getElementById("mainContent");
-    const items = data[activeRoom] || [];
-    const filtered = items.map((item, i) => ({item, i})).filter(({item}) => matchesFilter(item));
-
+    const items = data[activeRoom]||[];
+    const filtered = items.map((item,i)=>({item,i})).filter(({item})=>matchesFilter(item));
     let html = `<div class="room-header">
         <h2 class="room-title">${esc(activeRoom)}</h2>
-        <span class="room-count">${filtered.length} item${filtered.length !== 1 ? 's' : ''}</span>
+        <span class="room-count">${filtered.length} item${filtered.length!==1?'s':''}</span>
     </div>`;
-
-    if (filtered.length === 0 && items.length === 0) {
-        html += `<div class="empty-state">
-            <div class="empty-icon">&#128230;</div>
-            <p>No items in this room yet.<br>Add one below!</p>
-        </div>`;
-    } else if (filtered.length === 0) {
-        html += `<div class="empty-state">
-            <div class="empty-icon">&#128269;</div>
-            <p>No items match this filter.</p>
-        </div>`;
+    if (filtered.length===0 && items.length===0) {
+        html += `<div class="empty-state"><div class="empty-icon">&#128230;</div><p>No items yet. Add one below!</p></div>`;
+    } else if (filtered.length===0) {
+        html += `<div class="empty-state"><div class="empty-icon">&#128269;</div><p>No items match this filter.</p></div>`;
     }
-
     html += `<ul class="checklist">`;
-    for (const {item, i} of filtered) {
-        html += renderItem(activeRoom, i, item);
-    }
+    for (const {item,i} of filtered) html += renderItem(activeRoom,i,item);
     html += `</ul>`;
-
-    // Add form
     const rid = slugify(activeRoom);
-    html += `
-    <div class="add-section">
+    html += `<div class="add-section">
         <button class="add-toggle" onclick="toggleAddForm('${rid}')" id="addToggle-${rid}">
             <span class="plus-icon">+</span> Add new item to ${esc(activeRoom)}
         </button>
         <div class="add-form" id="addForm-${rid}">
             <div class="form-title">New Item</div>
             <div class="form-grid">
-                <div class="input-group full-width">
-                    <label>What needs to be done?</label>
-                    <input type="text" id="addName-${rid}" placeholder="e.g. Pack dishes">
-                </div>
-                <div class="input-group">
-                    <label>Assigned To</label>
-                    <input type="text" id="addWho-${rid}" placeholder="e.g. Greg">
-                </div>
-                <div class="input-group">
-                    <label>Notes</label>
-                    <input type="text" id="addNotes-${rid}" placeholder="Optional">
-                </div>
-                <div class="input-group full-width">
-                    <label>Category</label>
+                <div class="input-group full-width"><label>What needs to be done?</label>
+                    <input type="text" id="addName-${rid}" placeholder="e.g. Pack dishes"></div>
+                <div class="input-group"><label>Assigned To</label>
+                    <input type="text" id="addWho-${rid}" placeholder="e.g. Greg"></div>
+                <div class="input-group"><label>Notes</label>
+                    <input type="text" id="addNotes-${rid}" placeholder="Optional"></div>
+                <div class="input-group full-width"><label>Category</label>
                     <div class="tag-options">
-                        <label class="tag-option" data-tag="garage" onclick="toggleTag(this)">
-                            <input type="checkbox" id="addGarage-${rid}"> Garage
-                        </label>
-                        <label class="tag-option" data-tag="sell" onclick="toggleTag(this)">
-                            <input type="checkbox" id="addSell-${rid}"> Sell
-                        </label>
-                        <label class="tag-option" data-tag="give" onclick="toggleTag(this)">
-                            <input type="checkbox" id="addGive-${rid}"> Give Away
-                        </label>
-                        <label class="tag-option" data-tag="trash" onclick="toggleTag(this)">
-                            <input type="checkbox" id="addTrash-${rid}"> Trash
-                        </label>
+                        <label class="tag-option" data-tag="garage" onclick="toggleTag(this)"><input type="checkbox" id="addGarage-${rid}"> Garage</label>
+                        <label class="tag-option" data-tag="sell" onclick="toggleTag(this)"><input type="checkbox" id="addSell-${rid}"> Sell</label>
+                        <label class="tag-option" data-tag="give" onclick="toggleTag(this)"><input type="checkbox" id="addGive-${rid}"> Give Away</label>
+                        <label class="tag-option" data-tag="trash" onclick="toggleTag(this)"><input type="checkbox" id="addTrash-${rid}"> Trash</label>
                     </div>
                 </div>
             </div>
@@ -1034,7 +827,6 @@ function renderMainContent() {
             </div>
         </div>
     </div>`;
-
     c.innerHTML = html;
 }
 
@@ -1045,230 +837,365 @@ function renderItem(room, index, item) {
     if (item.sell) tags += `<span class="tag tag-sell">Sell</span>`;
     if (item.give) tags += `<span class="tag tag-give">Give Away</span>`;
     if (item.trash) tags += `<span class="tag tag-trash">Trash</span>`;
-
     const notes = item.notes ? `<div class="item-notes">${esc(item.notes)}</div>` : "";
-
-    return `
-    <li class="checklist-item ${item.done ? 'done' : ''}">
-        <div class="custom-check ${item.done ? 'checked' : ''}" onclick="toggleDone('${escAttr(room)}', ${index})"></div>
+    return `<li class="checklist-item ${item.done?'done':''}">
+        <div class="custom-check ${item.done?'checked':''}" onclick="toggleDone('${escAttr(room)}',${index})"></div>
         <div class="item-body">
             <div class="item-name">${esc(item.name)}</div>
-            ${tags ? `<div class="item-meta">${tags}</div>` : ''}
-            ${notes}
+            ${tags?`<div class="item-meta">${tags}</div>`:''}${notes}
         </div>
         <div class="item-actions">
-            <button class="action-btn" onclick="openEdit('${escAttr(room)}', ${index})" title="Edit">&#9998;</button>
-            <button class="action-btn delete" onclick="deleteItem('${escAttr(room)}', ${index})" title="Remove">&times;</button>
+            <button class="action-btn" onclick="openEdit('${escAttr(room)}',${index})" title="Edit">&#9998;</button>
+            <button class="action-btn delete" onclick="deleteItem('${escAttr(room)}',${index})" title="Remove">&times;</button>
         </div>
     </li>`;
 }
 
 function updateProgress() {
-    let total = 0, done = 0, garage = 0, sell = 0, give = 0, trash = 0;
-    for (const room of ROOMS) {
-        for (const item of data[room] || []) {
-            total++;
-            if (item.done) done++;
-            if (item.garage) garage++;
-            if (item.sell) sell++;
-            if (item.give) give++;
-            if (item.trash) trash++;
-        }
+    let total=0,done=0,garage=0,sell=0,give=0,trash=0;
+    for (const room of ROOMS) for (const item of data[room]||[]) {
+        total++; if(item.done)done++; if(item.garage)garage++; if(item.sell)sell++; if(item.give)give++; if(item.trash)trash++;
     }
-    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-    document.getElementById("progressPct").textContent = pct + "%";
-    document.getElementById("progressFill").style.width = pct + "%";
+    const pct = total>0?Math.round((done/total)*100):0;
+    document.getElementById("progressPct").textContent = pct+"%";
+    document.getElementById("progressFill").style.width = pct+"%";
     document.getElementById("progressStats").innerHTML = `
         <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--green-bg);color:var(--green);">&#10003;</span> ${done} done</span>
-        <span class="mini-stat"><span class="mini-stat-icon" style="background:#f1f5f9;color:#64748b;">&#9744;</span> ${total - done} left</span>
+        <span class="mini-stat"><span class="mini-stat-icon" style="background:#f1f5f9;color:#64748b;">&#9744;</span> ${total-done} left</span>
         <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--orange-bg);color:#d97706;">G</span> ${garage}</span>
         <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--red-bg);color:var(--red);">S</span> ${sell}</span>
         <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--purple-bg);color:var(--purple);">&#9829;</span> ${give}</span>
-        <span class="mini-stat"><span class="mini-stat-icon" style="background:#f1f5f9;color:#475569;">T</span> ${trash}</span>
-    `;
+        <span class="mini-stat"><span class="mini-stat-icon" style="background:#f1f5f9;color:#475569;">T</span> ${trash}</span>`;
 }
 
-function refreshUI() {
-    renderRoomPills();
-    renderMainContent();
-    updateProgress();
+// ==================== TIMELINE RENDERING ====================
+function renderTimeline() {
+    const c = document.getElementById("timelineContent");
+    if (timeline.length === 0) {
+        c.innerHTML = `<div class="empty-state"><div class="empty-icon">&#128197;</div><p>No tasks yet. Add your first moving task!</p></div>`;
+        return;
+    }
+    const today = new Date().toISOString().split("T")[0];
+    const groups = { overdue: [], today: [], upcoming: [], nodate: [] };
+
+    timeline.forEach((t, i) => {
+        const entry = { ...t, _idx: i };
+        if (!t.date) groups.nodate.push(entry);
+        else if (t.date < today && !t.done) groups.overdue.push(entry);
+        else if (t.date === today) groups.today.push(entry);
+        else groups.upcoming.push(entry);
+    });
+
+    // Sort dated groups
+    groups.overdue.sort((a,b) => a.date.localeCompare(b.date));
+    groups.upcoming.sort((a,b) => a.date.localeCompare(b.date));
+
+    let html = "";
+    const renderGroup = (label, badge, items) => {
+        if (items.length === 0) return "";
+        let h = `<div class="timeline-group">
+            <div class="timeline-date-header">
+                <span class="timeline-date-label">${label}</span>
+                <span class="timeline-date-badge ${badge}">${items.length} task${items.length!==1?'s':''}</span>
+            </div>`;
+        for (const t of items) {
+            const dateStr = t.date ? formatDate(t.date) : "";
+            h += `<div class="timeline-item ${t.done?'done':''}">
+                <div class="custom-check ${t.done?'checked':''}" onclick="toggleTimelineDone(${t._idx})"></div>
+                <div class="tl-body">
+                    <div class="tl-name">${esc(t.name)}</div>
+                    <div class="tl-detail">
+                        ${t.who?`<span class="tag tag-who">${esc(t.who)}</span> `:''}
+                        ${dateStr?`<span class="tag tag-date">${dateStr}</span> `:''}
+                        ${t.notes?esc(t.notes):''}
+                    </div>
+                </div>
+                <div class="item-actions" style="opacity:1">
+                    <button class="action-btn" onclick="openTimelineEdit(${t._idx})" title="Edit">&#9998;</button>
+                    <button class="action-btn delete" onclick="deleteTimelineItem(${t._idx})" title="Remove">&times;</button>
+                </div>
+            </div>`;
+        }
+        h += `</div>`;
+        return h;
+    };
+
+    html += renderGroup("Overdue", "badge-overdue", groups.overdue);
+    html += renderGroup("Today", "badge-today", groups.today);
+    html += renderGroup("Upcoming", "badge-upcoming", groups.upcoming);
+    html += renderGroup("No Date Set", "badge-nodate", groups.nodate);
+
+    c.innerHTML = html;
 }
 
-// ==================== FILTERS ====================
+// ==================== BUDGET RENDERING ====================
+function renderBudget() {
+    // Summary
+    let totalExpenses = 0, totalIncome = 0, totalPaid = 0, totalUnpaid = 0;
+    for (const e of expenses) {
+        const amt = parseFloat(e.amount) || 0;
+        if (e.category === "Income") {
+            totalIncome += amt;
+        } else {
+            totalExpenses += amt;
+            if (e.paid === "yes") totalPaid += amt;
+            else totalUnpaid += amt;
+        }
+    }
+
+    document.getElementById("budgetSummary").innerHTML = `
+        <div class="summary-card">
+            <div class="summary-card-label">Total Expenses</div>
+            <div class="summary-card-value red">$${totalExpenses.toFixed(2)}</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-label">Income (Sold Items)</div>
+            <div class="summary-card-value green">$${totalIncome.toFixed(2)}</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-label">Net Cost</div>
+            <div class="summary-card-value ${(totalExpenses-totalIncome)>0?'red':'green'}">$${(totalExpenses-totalIncome).toFixed(2)}</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-label">Still Owed</div>
+            <div class="summary-card-value ${totalUnpaid>0?'red':'green'}">$${totalUnpaid.toFixed(2)}</div>
+        </div>`;
+
+    // Group by category
+    const cats = {};
+    expenses.forEach((e, i) => {
+        if (!cats[e.category]) cats[e.category] = [];
+        cats[e.category].push({ ...e, _idx: i });
+    });
+
+    const catOrder = ["Moving Costs","Supplies","Repairs","Utilities","Monthly Bills","Income","Other"];
+    const bc = document.getElementById("budgetContent");
+    let html = "";
+
+    for (const cat of catOrder) {
+        const items = cats[cat];
+        if (!items || items.length === 0) continue;
+        const catTotal = items.reduce((s, e) => s + (parseFloat(e.amount)||0), 0);
+
+        html += `<div class="budget-category">
+            <div class="budget-cat-header">
+                <span class="budget-cat-title">${esc(cat)}</span>
+                <span class="budget-cat-total">$${catTotal.toFixed(2)}</span>
+            </div>
+            <ul class="expense-list">`;
+
+        for (const e of items) {
+            const amt = parseFloat(e.amount)||0;
+            const isIncome = e.category === "Income";
+            html += `<li class="expense-item">
+                <div class="exp-body">
+                    <div class="exp-name">${esc(e.name)}</div>
+                    <div class="exp-detail">
+                        ${e.date?formatDate(e.date)+' &middot; ':''}
+                        ${e.notes?esc(e.notes):''}
+                    </div>
+                </div>
+                <span class="exp-paid ${e.paid==='yes'?'yes':'no'}">${e.paid==='yes'?'Paid':'Unpaid'}</span>
+                <span class="exp-amount ${isIncome?'income':'expense'}">${isIncome?'+':'-'}$${amt.toFixed(2)}</span>
+                <div class="item-actions" style="opacity:1">
+                    <button class="action-btn" onclick="openExpenseEdit(${e._idx})" title="Edit">&#9998;</button>
+                    <button class="action-btn delete" onclick="deleteExpense(${e._idx})" title="Remove">&times;</button>
+                </div>
+            </li>`;
+        }
+        html += `</ul></div>`;
+    }
+
+    if (expenses.length === 0) {
+        html = `<div class="empty-state"><div class="empty-icon">&#128176;</div><p>No expenses yet. Start tracking your moving costs!</p></div>`;
+    }
+
+    bc.innerHTML = html;
+}
+
+// ==================== ACTIONS: ROOMS ====================
 function matchesFilter(item) {
-    switch (activeFilter) {
-        case "all": return true;
-        case "pending": return !item.done;
-        case "done": return item.done;
-        case "garage": return item.garage;
-        case "sell": return item.sell;
-        case "give": return item.give;
-        case "trash": return item.trash;
-        case "unassigned": return !item.who;
-        default: return true;
+    switch(activeFilter) {
+        case "all":return true; case "pending":return !item.done; case "done":return item.done;
+        case "garage":return item.garage; case "sell":return item.sell;
+        case "give":return item.give; case "trash":return item.trash;
+        case "unassigned":return !item.who; default:return true;
     }
 }
-
 function setupFilters() {
     document.querySelectorAll(".filter-chip").forEach(btn => {
         btn.onclick = () => {
-            document.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            activeFilter = btn.dataset.filter;
-            renderMainContent();
+            document.querySelectorAll(".filter-chip").forEach(b=>b.classList.remove("active"));
+            btn.classList.add("active"); activeFilter=btn.dataset.filter; renderMainContent();
         };
     });
 }
-
-// ==================== ACTIONS ====================
-function toggleDone(room, index) {
-    data[room][index].done = !data[room][index].done;
-    saveData();
-    refreshUI();
-}
-
+function toggleDone(room, i) { data[room][i].done=!data[room][i].done; saveAll(); fullRefresh(); }
 function toggleAddForm(rid) {
-    const form = document.getElementById("addForm-" + rid);
-    const toggle = document.getElementById("addToggle-" + rid);
-    const isOpen = form.classList.contains("open");
-    form.classList.toggle("open");
-    toggle.style.display = isOpen ? "" : "none";
-    if (!isOpen) {
-        const nameInput = document.getElementById("addName-" + rid);
-        if (nameInput) nameInput.focus();
-    }
+    const form=document.getElementById("addForm-"+rid), toggle=document.getElementById("addToggle-"+rid);
+    const open=form.classList.contains("open"); form.classList.toggle("open");
+    toggle.style.display=open?"":"none";
+    if(!open){ const n=document.getElementById("addName-"+rid); if(n)n.focus(); }
 }
-
 function toggleTag(el) {
-    const cb = el.querySelector("input");
-    const tag = el.dataset.tag;
-    // Toggle happens automatically from label click
-    setTimeout(() => {
-        if (cb.checked) {
-            el.classList.add("selected-" + tag);
-        } else {
-            el.classList.remove("selected-" + tag);
-        }
-    }, 0);
+    const cb=el.querySelector("input"), tag=el.dataset.tag;
+    setTimeout(()=>{ el.classList.toggle("selected-"+tag, cb.checked); },0);
 }
-
 function addItem(room) {
-    const rid = slugify(room);
-    const nameEl = document.getElementById("addName-" + rid);
-    const name = nameEl.value.trim();
-    if (!name) { nameEl.focus(); return; }
-
+    const rid=slugify(room), nameEl=document.getElementById("addName-"+rid);
+    const name=nameEl.value.trim(); if(!name){nameEl.focus();return;}
     data[room].push({
-        name,
-        who: document.getElementById("addWho-" + rid).value.trim(),
-        garage: document.getElementById("addGarage-" + rid).checked,
-        sell: document.getElementById("addSell-" + rid).checked,
-        give: document.getElementById("addGive-" + rid).checked,
-        trash: document.getElementById("addTrash-" + rid).checked,
-        done: false,
-        notes: document.getElementById("addNotes-" + rid).value.trim(),
+        name, who:document.getElementById("addWho-"+rid).value.trim(),
+        garage:document.getElementById("addGarage-"+rid).checked,
+        sell:document.getElementById("addSell-"+rid).checked,
+        give:document.getElementById("addGive-"+rid).checked,
+        trash:document.getElementById("addTrash-"+rid).checked,
+        done:false, notes:document.getElementById("addNotes-"+rid).value.trim(),
     });
-    saveData();
-    refreshUI();
+    saveAll(); fullRefresh();
 }
-
-function deleteItem(room, index) {
-    const name = data[room][index].name;
-    if (!confirm(`Remove "${name}"?`)) return;
-    data[room].splice(index, 1);
-    saveData();
-    refreshUI();
-}
-
-function openEdit(room, index) {
-    editingItem = { room, index };
-    const item = data[room][index];
-    document.getElementById("editName").value = item.name;
-    document.getElementById("editWho").value = item.who || "";
-    document.getElementById("editNotes").value = item.notes || "";
-    document.getElementById("editGarage").checked = item.garage;
-    document.getElementById("editSell").checked = item.sell;
-    document.getElementById("editGive").checked = item.give;
-    document.getElementById("editTrash").checked = item.trash;
-
-    // Update tag option visual states
-    document.querySelectorAll("#editTags .tag-option").forEach(el => {
-        const tag = el.dataset.tag;
-        const cb = el.querySelector("input");
-        el.classList.toggle("selected-" + tag, cb.checked);
+function deleteItem(room,i) { if(!confirm(`Remove "${data[room][i].name}"?`))return; data[room].splice(i,1); saveAll(); fullRefresh(); }
+function openEdit(room,i) {
+    editingItem={room,index:i}; const item=data[room][i];
+    document.getElementById("editName").value=item.name;
+    document.getElementById("editWho").value=item.who||"";
+    document.getElementById("editNotes").value=item.notes||"";
+    document.getElementById("editGarage").checked=item.garage;
+    document.getElementById("editSell").checked=item.sell;
+    document.getElementById("editGive").checked=item.give;
+    document.getElementById("editTrash").checked=item.trash;
+    document.querySelectorAll("#editTags .tag-option").forEach(el=>{
+        el.classList.toggle("selected-"+el.dataset.tag, el.querySelector("input").checked);
     });
-
-    document.getElementById("editModal").classList.add("open");
+    openModal("editModal");
 }
-
 function saveEdit() {
-    if (!editingItem) return;
-    const { room, index } = editingItem;
-    const item = data[room][index];
-    item.name = document.getElementById("editName").value.trim() || item.name;
-    item.who = document.getElementById("editWho").value.trim();
-    item.notes = document.getElementById("editNotes").value.trim();
-    item.garage = document.getElementById("editGarage").checked;
-    item.sell = document.getElementById("editSell").checked;
-    item.give = document.getElementById("editGive").checked;
-    item.trash = document.getElementById("editTrash").checked;
-    saveData();
-    closeModal();
-    refreshUI();
+    if(!editingItem)return; const{room,index}=editingItem; const item=data[room][index];
+    item.name=document.getElementById("editName").value.trim()||item.name;
+    item.who=document.getElementById("editWho").value.trim();
+    item.notes=document.getElementById("editNotes").value.trim();
+    item.garage=document.getElementById("editGarage").checked;
+    item.sell=document.getElementById("editSell").checked;
+    item.give=document.getElementById("editGive").checked;
+    item.trash=document.getElementById("editTrash").checked;
+    saveAll(); closeModal("editModal"); editingItem=null; fullRefresh();
 }
 
-function closeModal() {
-    document.getElementById("editModal").classList.remove("open");
-    editingItem = null;
+// ==================== ACTIONS: TIMELINE ====================
+function openTimelineModal() { editingTlIdx=null; document.getElementById("timelineModalTitle").textContent="Add Task";
+    document.getElementById("tlName").value=""; document.getElementById("tlDate").value="";
+    document.getElementById("tlWho").value=""; document.getElementById("tlNotes").value="";
+    openModal("timelineModal");
 }
+function openTimelineEdit(i) { editingTlIdx=i; const t=timeline[i];
+    document.getElementById("timelineModalTitle").textContent="Edit Task";
+    document.getElementById("tlName").value=t.name;
+    document.getElementById("tlDate").value=t.date||"";
+    document.getElementById("tlWho").value=t.who||"";
+    document.getElementById("tlNotes").value=t.notes||"";
+    openModal("timelineModal");
+}
+function saveTimelineItem() {
+    const name=document.getElementById("tlName").value.trim(); if(!name)return;
+    const item = {
+        name, date:document.getElementById("tlDate").value,
+        who:document.getElementById("tlWho").value.trim(),
+        notes:document.getElementById("tlNotes").value.trim(),
+        done: editingTlIdx!==null ? timeline[editingTlIdx].done : false
+    };
+    if (editingTlIdx!==null) timeline[editingTlIdx]=item;
+    else timeline.push(item);
+    editingTlIdx=null; saveAll(); closeModal("timelineModal"); fullRefresh();
+}
+function toggleTimelineDone(i) { timeline[i].done=!timeline[i].done; saveAll(); fullRefresh(); }
+function deleteTimelineItem(i) { if(!confirm(`Remove "${timeline[i].name}"?`))return; timeline.splice(i,1); saveAll(); fullRefresh(); }
 
-// Modal close on background click
-document.getElementById("editModal").addEventListener("click", (e) => {
-    if (e.target === e.currentTarget) closeModal();
+// ==================== ACTIONS: BUDGET ====================
+function openExpenseModal() { editingExpIdx=null; document.getElementById("expenseModalTitle").textContent="Add Expense";
+    document.getElementById("expName").value=""; document.getElementById("expAmount").value="";
+    document.getElementById("expCategory").value="Moving Costs"; document.getElementById("expDate").value="";
+    document.getElementById("expPaid").value="no"; document.getElementById("expNotes").value="";
+    openModal("expenseModal");
+}
+function openExpenseEdit(i) { editingExpIdx=i; const e=expenses[i];
+    document.getElementById("expenseModalTitle").textContent="Edit Expense";
+    document.getElementById("expName").value=e.name;
+    document.getElementById("expAmount").value=e.amount||"";
+    document.getElementById("expCategory").value=e.category;
+    document.getElementById("expDate").value=e.date||"";
+    document.getElementById("expPaid").value=e.paid||"no";
+    document.getElementById("expNotes").value=e.notes||"";
+    openModal("expenseModal");
+}
+function saveExpense() {
+    const name=document.getElementById("expName").value.trim(); if(!name)return;
+    const item = {
+        name, amount:parseFloat(document.getElementById("expAmount").value)||0,
+        category:document.getElementById("expCategory").value,
+        date:document.getElementById("expDate").value,
+        paid:document.getElementById("expPaid").value,
+        notes:document.getElementById("expNotes").value.trim(),
+    };
+    if (editingExpIdx!==null) expenses[editingExpIdx]=item;
+    else expenses.push(item);
+    editingExpIdx=null; saveAll(); closeModal("expenseModal"); fullRefresh();
+}
+function deleteExpense(i) { if(!confirm(`Remove "${expenses[i].name}"?`))return; expenses.splice(i,1); saveAll(); fullRefresh(); }
+
+// ==================== MODALS ====================
+function openModal(id) { document.getElementById(id).classList.add("open"); }
+function closeModal(id) { document.getElementById(id).classList.remove("open"); editingItem=null; editingTlIdx=null; editingExpIdx=null; }
+
+// Close modals on background click
+document.querySelectorAll(".modal-overlay").forEach(m => {
+    m.addEventListener("click", e => { if(e.target===e.currentTarget) closeModal(m.id); });
 });
 
 // Edit modal tag toggles
 document.querySelectorAll("#editTags .tag-option").forEach(el => {
     el.addEventListener("click", () => {
-        const tag = el.dataset.tag;
-        const cb = el.querySelector("input");
-        setTimeout(() => {
-            el.classList.toggle("selected-" + tag, cb.checked);
-        }, 0);
+        setTimeout(() => { el.classList.toggle("selected-"+el.dataset.tag, el.querySelector("input").checked); }, 0);
     });
 });
 
 // ==================== UTILITIES ====================
-function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-"); }
-function esc(s) {
-    const d = document.createElement("div");
-    d.textContent = s;
-    return d.innerHTML;
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,"-"); }
+function esc(s) { const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+function escAttr(s) { return s.replace(/'/g,"\\'").replace(/"/g,"&quot;"); }
+function formatDate(d) {
+    if(!d) return "";
+    const parts = d.split("-");
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return months[parseInt(parts[1])-1] + " " + parseInt(parts[2]) + ", " + parts[0];
 }
-function escAttr(s) { return s.replace(/'/g, "\\'").replace(/"/g, "&quot;"); }
+
+function fullRefresh() {
+    if (activePage === "rooms") { renderRoomPills(); renderMainContent(); updateProgress(); }
+    else if (activePage === "timeline") { renderTimeline(); }
+    else if (activePage === "budget") { renderBudget(); }
+}
 
 // ==================== EXPORT / RESET ====================
 window.exportData = function() {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-    a.download = "moving-checklist-backup.json"; a.click();
+    const blob=new Blob([JSON.stringify({checklist:data,timeline,expenses},null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download="moving-checklist-backup.json"; a.click();
 };
 window.resetData = function() {
-    if (confirm("Reset ALL data to original spreadsheet?")) {
-        localStorage.removeItem("movingChecklist");
-        for (const room of ROOMS) { data[room] = DEFAULT_DATA[room] ? DEFAULT_DATA[room].map(i => ({...i})) : []; }
-        saveData(true);
-        refreshUI();
-        showToast("Data reset to defaults");
+    if(confirm("Reset ALL data?")){
+        localStorage.removeItem("appData");
+        for(const room of ROOMS) data[room]=DEFAULT_DATA[room]?DEFAULT_DATA[room].map(i=>({...i})):[];
+        timeline=DEFAULT_TIMELINE.map(i=>({...i})); expenses=DEFAULT_EXPENSES.map(i=>({...i}));
+        saveAll(true); fullRefresh(); showToast("Data reset");
     }
 };
 
 // ==================== INIT ====================
-loadData();
-refreshUI();
+loadAll();
+setupPageTabs();
 setupFilters();
+fullRefresh();
 initFirebase();
 </script>
-
 </body>
 </html>
