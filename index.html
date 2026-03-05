@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mom's Moving Checklist</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            background: #faf7f2;
+            color: #3a3a3a;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6b8f71, #8fbc8f);
+            color: white;
+            text-align: center;
+            padding: 24px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        header h1 {
+            font-size: 2rem;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .save-banner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #4a7c59;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 1rem;
+            z-index: 1000;
+            animation: fadeOut 2s ease-in-out forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; display: none; }
+        }
+
+        /* Room Tabs */
+        .tabs-wrapper {
+            background: #f0ebe3;
+            border-bottom: 2px solid #d4cfc7;
+            padding: 12px 12px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            min-width: max-content;
+        }
+        .tab {
+            padding: 10px 18px;
+            background: #e8e2d8;
+            border: 1px solid #d4cfc7;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: inherit;
+            color: #5a5a5a;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .tab:hover { background: #f5f0e8; }
+        .tab.active {
+            background: #faf7f2;
+            color: #3a3a3a;
+            font-weight: bold;
+            border-bottom: 2px solid #faf7f2;
+            margin-bottom: -2px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 20px;
+            background: #f5f0e8;
+            border-bottom: 1px solid #e0dbd3;
+            font-size: 0.95rem;
+        }
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-total { background: #6b8f71; }
+        .dot-assigned { background: #5b8abf; }
+        .dot-garage { background: #c4883d; }
+        .dot-sell { background: #b85c5c; }
+        .dot-give { background: #8b6fad; }
+        .dot-trash { background: #7a7a7a; }
+        .dot-done { background: #4a7c59; }
+
+        /* Room Content */
+        .room-content {
+            display: none;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .room-content.active { display: block; }
+
+        .room-title {
+            font-size: 1.5rem;
+            color: #5a7a5e;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d4cfc7;
+        }
+
+        /* Checklist Items */
+        .checklist { list-style: none; }
+
+        .checklist-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            background: white;
+            border: 1px solid #e0dbd3;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: box-shadow 0.2s, opacity 0.3s;
+        }
+        .checklist-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .checklist-item.done {
+            opacity: 0.55;
+            background: #f0ede8;
+        }
+        .checklist-item.done .item-name {
+            text-decoration: line-through;
+        }
+
+        .item-check {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #6b8f71;
+            flex-shrink: 0;
+        }
+
+        .item-name {
+            flex: 1;
+            min-width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .item-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .tag {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        .tag-who { background: #5b8abf; }
+        .tag-garage { background: #c4883d; }
+        .tag-sell { background: #b85c5c; }
+        .tag-give { background: #8b6fad; }
+        .tag-trash { background: #7a7a7a; }
+
+        .item-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .btn-edit, .btn-delete {
+            padding: 4px 10px;
+            border: 1px solid #d4cfc7;
+            border-radius: 6px;
+            background: #f5f0e8;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: #5a5a5a;
+            transition: background 0.2s;
+        }
+        .btn-edit:hover { background: #e8e2d8; }
+        .btn-delete { color: #b85c5c; }
+        .btn-delete:hover { background: #f5e0e0; }
+
+        /* Add Item Form */
+        .add-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border: 2px dashed #d4cfc7;
+            border-radius: 12px;
+        }
+        .add-section h3 {
+            color: #6b8f71;
+            margin-bottom: 14px;
+            font-size: 1.15rem;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            color: #7a7a7a;
+        }
+        .form-group input, .form-group select {
+            padding: 8px 12px;
+            border: 1px solid #d4cfc7;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: #faf7f2;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #6b8f71;
+            box-shadow: 0 0 0 2px rgba(107,143,113,0.2);
+        }
+
+        .checkbox-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+        .checkbox-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .checkbox-row input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #6b8f71;
+        }
+
+        .btn-add {
+            margin-top: 12px;
+            padding: 10px 28px;
+            background: #6b8f71;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-add:hover { background: #5a7c60; }
+
+        /* Edit Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: #faf7f2;
+            border-radius: 16px;
+            padding: 28px;
+            width: 90%;
+            max-width: 480px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .modal h3 {
+            color: #6b8f71;
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+        .modal .form-group {
+            margin-bottom: 12px;
+        }
+        .modal .form-group input, .modal .form-group select {
+            width: 100%;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .btn-save {
+            padding: 10px 24px;
+            background: #6b8f71;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .btn-save:hover { background: #5a7c60; }
+        .btn-cancel {
+            padding: 10px 24px;
+            background: #e0dbd3;
+            color: #5a5a5a;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .btn-cancel:hover { background: #d4cfc7; }
+
+        /* Progress Bar */
+        .progress-container {
+            padding: 12px 20px;
+            background: #f5f0e8;
+        }
+        .progress-label {
+            font-size: 0.9rem;
+            color: #7a7a7a;
+            margin-bottom: 6px;
+        }
+        .progress-bar {
+            height: 10px;
+            background: #e0dbd3;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6b8f71, #8fbc8f);
+            border-radius: 5px;
+            transition: width 0.4s ease;
+        }
+
+        /* Filter Controls */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 20px;
+            align-items: center;
+        }
+        .filter-bar label {
+            font-size: 0.9rem;
+            color: #7a7a7a;
+        }
+        .filter-btn {
+            padding: 5px 14px;
+            border: 1px solid #d4cfc7;
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: #5a5a5a;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { background: #f0ebe3; }
+        .filter-btn.active {
+            background: #6b8f71;
+            color: white;
+            border-color: #6b8f71;
+        }
+
+        /* Print Styles */
+        @media print {
+            .tabs-wrapper, .add-section, .item-actions, .filter-bar, .btn-add, header p { display: none !important; }
+            .room-content { display: block !important; page-break-after: always; }
+            .checklist-item { box-shadow: none; border: 1px solid #ccc; }
+            body { font-size: 14px; }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.5rem; }
+            .tab { padding: 8px 12px; font-size: 0.9rem; }
+            .checklist-item { padding: 12px; }
+            .item-name { font-size: 1rem; }
+            .form-row { flex-direction: column; }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="save-banner" id="saveBanner">Changes saved!</div>
+
+<header>
+    <h1>Mom's Moving Checklist</h1>
+    <p>Keep track of everything &mdash; room by room</p>
+</header>
+
+<!-- Overall Progress -->
+<div class="progress-container">
+    <div class="progress-label" id="progressLabel">0 of 0 items completed (0%)</div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar" id="statsBar"></div>
+
+<!-- Filters -->
+<div class="filter-bar">
+    <label>Show:</label>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="pending">Not Done</button>
+    <button class="filter-btn" data-filter="done">Done</button>
+    <button class="filter-btn" data-filter="garage">Garage</button>
+    <button class="filter-btn" data-filter="sell">Sell</button>
+    <button class="filter-btn" data-filter="give">Give Away</button>
+    <button class="filter-btn" data-filter="trash">Trash</button>
+    <button class="filter-btn" data-filter="unassigned">Unassigned</button>
+</div>
+
+<!-- Room Tabs -->
+<div class="tabs-wrapper">
+    <div class="tabs" id="tabs"></div>
+</div>
+
+<!-- Room Panels (generated by JS) -->
+<div id="roomPanels"></div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <h3>Edit Item</h3>
+        <div class="form-group">
+            <label>Item Name</label>
+            <input type="text" id="editName">
+        </div>
+        <div class="form-group">
+            <label>Assigned To</label>
+            <input type="text" id="editWho" placeholder="e.g. Greg, Mom, Scott...">
+        </div>
+        <div class="checkbox-row" style="margin-top:12px">
+            <label><input type="checkbox" id="editGarage"> Garage</label>
+            <label><input type="checkbox" id="editSell"> Sell</label>
+            <label><input type="checkbox" id="editGive"> Give Away</label>
+            <label><input type="checkbox" id="editTrash"> Trash</label>
+        </div>
+        <div class="form-group" style="margin-top:12px">
+            <label>Notes</label>
+            <input type="text" id="editNotes" placeholder="Optional notes...">
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-save" onclick="saveEdit()">Save</button>
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    Mom's Moving Checklist &mdash; Your data is saved in this browser automatically.
+</footer>
+
+<script>
+// ==================== DATA ====================
+const ROOMS = [
+    "Living Room", "Dining Room", "Kitchen", "Bathroom",
+    "Main BR", "South BR", "West BR", "North BR",
+    "Laundry", "H2O Softener", "Furnace", "Shop",
+    "Cellar", "Garage", "Shed"
+];
+
+const DEFAULT_DATA = {
+    "Living Room": [
+        { name: "Wall bubble left of fireplace", who: "Greg", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Christmas Tree", who: "", garage: true, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Roll top desk", who: "", garage: false, sell: true, give: false, trash: false, done: false, notes: "" },
+        { name: "Bench seat by front door", who: "", garage: false, sell: true, give: false, trash: false, done: false, notes: "?" },
+        { name: "Clean out front closet", who: "Mom", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Take down decorations", who: "Mom", garage: true, sell: false, give: false, trash: false, done: false, notes: "?" },
+        { name: "Ceiling repair (Back Door)", who: "Greg", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Replace Front Door", who: "Scott", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Clean storage area Upstairs", who: "Scott", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Move Sink to Garage", who: "", garage: true, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Paint Threshold near stairs", who: "Greg", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Expand Dining Table", who: "Linda", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Old Recliner", who: "", garage: false, sell: false, give: true, trash: false, done: false, notes: "" },
+        { name: "Remove Medicine Cabinet", who: "Scott", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Replace Light Fixture", who: "Scott", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Buy Light Bulbs", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Tall Dresser Bedroom", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Generator Details", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Cedar Chest (basement)", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Cabinet Hutch", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Antique Small Desk", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "End Tables", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Lamps", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+    ],
+    "Dining Room": [
+        { name: "Recliner chair", who: "", garage: false, sell: true, give: false, trash: false, done: false, notes: "" },
+        { name: "Remove power strip", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Stretch dining room table", who: "", garage: false, sell: false, give: false, trash: false, done: false, notes: "" },
+        { name: "Pack up most items from curio cabinet", who: "", garage: false, sell: false, give: true, trash: false, done: false, notes: "?" },
+        { name: "Grandfather clock", who: "", garage: false, sell: false, give: true, trash: false, done: false, notes: "?" },
+    ],
+    "Shop": [
+        { name: "Cast iron stove", who: "", garage: false, sell: true, give: false, trash: false, done: false, notes: "" },
+    ],
+    "Cellar": [
+        { name: "Glass jars", who: "", garage: false, sell: false, give: true, trash: false, done: false, notes: "" },
+    ],
+};
+
+// ==================== STATE ====================
+let data = {};
+let activeRoom = ROOMS[0];
+let activeFilter = "all";
+let editingItem = null; // { room, index }
+
+// ==================== INIT ====================
+function init() {
+    loadData();
+    renderTabs();
+    renderAllRooms();
+    updateStats();
+    updateProgress();
+    setupFilterButtons();
+}
+
+function loadData() {
+    const saved = localStorage.getItem("movingChecklist");
+    if (saved) {
+        data = JSON.parse(saved);
+        // Ensure all rooms exist
+        for (const room of ROOMS) {
+            if (!data[room]) data[room] = [];
+        }
+    } else {
+        // First visit: load defaults
+        for (const room of ROOMS) {
+            data[room] = DEFAULT_DATA[room] || [];
+        }
+        saveData();
+    }
+}
+
+function saveData() {
+    localStorage.setItem("movingChecklist", JSON.stringify(data));
+    showSaveBanner();
+}
+
+function showSaveBanner() {
+    const banner = document.getElementById("saveBanner");
+    banner.style.display = "block";
+    banner.style.animation = "none";
+    banner.offsetHeight; // trigger reflow
+    banner.style.animation = "fadeOut 2s ease-in-out forwards";
+    setTimeout(() => { banner.style.display = "none"; }, 2100);
+}
+
+// ==================== TABS ====================
+function renderTabs() {
+    const container = document.getElementById("tabs");
+    container.innerHTML = "";
+    for (const room of ROOMS) {
+        const count = data[room] ? data[room].length : 0;
+        const doneCount = data[room] ? data[room].filter(i => i.done).length : 0;
+        const tab = document.createElement("button");
+        tab.className = "tab" + (room === activeRoom ? " active" : "");
+        tab.textContent = room + (count > 0 ? ` (${doneCount}/${count})` : "");
+        tab.onclick = () => switchRoom(room);
+        container.appendChild(tab);
+    }
+}
+
+function switchRoom(room) {
+    activeRoom = room;
+    renderTabs();
+    document.querySelectorAll(".room-content").forEach(el => el.classList.remove("active"));
+    document.getElementById("room-" + slugify(room)).classList.add("active");
+}
+
+function slugify(str) {
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
+// ==================== RENDER ROOMS ====================
+function renderAllRooms() {
+    const container = document.getElementById("roomPanels");
+    container.innerHTML = "";
+    for (const room of ROOMS) {
+        const panel = document.createElement("div");
+        panel.className = "room-content" + (room === activeRoom ? " active" : "");
+        panel.id = "room-" + slugify(room);
+        panel.innerHTML = renderRoomHTML(room);
+        container.appendChild(panel);
+    }
+}
+
+function renderRoomHTML(room) {
+    const items = data[room] || [];
+    let html = `<h2 class="room-title">${room}</h2>`;
+    html += `<ul class="checklist">`;
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (!matchesFilter(item)) continue;
+        html += renderItemHTML(room, i, item);
+    }
+    html += `</ul>`;
+
+    // Add new item form
+    const roomId = slugify(room);
+    html += `
+    <div class="add-section">
+        <h3>Add New Item</h3>
+        <div class="form-row">
+            <div class="form-group" style="flex:2">
+                <label>Item Name</label>
+                <input type="text" id="addName-${roomId}" placeholder="What needs to be done?">
+            </div>
+            <div class="form-group" style="flex:1">
+                <label>Assigned To</label>
+                <input type="text" id="addWho-${roomId}" placeholder="e.g. Greg">
+            </div>
+        </div>
+        <div class="checkbox-row">
+            <label><input type="checkbox" id="addGarage-${roomId}"> Garage</label>
+            <label><input type="checkbox" id="addSell-${roomId}"> Sell</label>
+            <label><input type="checkbox" id="addGive-${roomId}"> Give Away</label>
+            <label><input type="checkbox" id="addTrash-${roomId}"> Trash</label>
+        </div>
+        <div class="form-row" style="margin-top:8px">
+            <div class="form-group" style="flex:1">
+                <label>Notes</label>
+                <input type="text" id="addNotes-${roomId}" placeholder="Optional notes...">
+            </div>
+        </div>
+        <button class="btn-add" onclick="addItem('${room}')">Add Item</button>
+    </div>`;
+    return html;
+}
+
+function renderItemHTML(room, index, item) {
+    let tags = "";
+    if (item.who) tags += `<span class="tag tag-who">${escapeHtml(item.who)}</span>`;
+    if (item.garage) tags += `<span class="tag tag-garage">Garage</span>`;
+    if (item.sell) tags += `<span class="tag tag-sell">Sell</span>`;
+    if (item.give) tags += `<span class="tag tag-give">Give Away</span>`;
+    if (item.trash) tags += `<span class="tag tag-trash">Trash</span>`;
+
+    const notesHtml = item.notes ? ` <small style="color:#999">(${escapeHtml(item.notes)})</small>` : "";
+
+    return `
+    <li class="checklist-item ${item.done ? 'done' : ''}">
+        <input type="checkbox" class="item-check" ${item.done ? 'checked' : ''}
+            onchange="toggleDone('${escapeAttr(room)}', ${index})">
+        <span class="item-name">${escapeHtml(item.name)}${notesHtml}</span>
+        <div class="item-tags">${tags}</div>
+        <div class="item-actions">
+            <button class="btn-edit" onclick="openEdit('${escapeAttr(room)}', ${index})">Edit</button>
+            <button class="btn-delete" onclick="deleteItem('${escapeAttr(room)}', ${index})">Remove</button>
+        </div>
+    </li>`;
+}
+
+// ==================== FILTERING ====================
+function matchesFilter(item) {
+    switch (activeFilter) {
+        case "all": return true;
+        case "pending": return !item.done;
+        case "done": return item.done;
+        case "garage": return item.garage;
+        case "sell": return item.sell;
+        case "give": return item.give;
+        case "trash": return item.trash;
+        case "unassigned": return !item.who;
+        default: return true;
+    }
+}
+
+function setupFilterButtons() {
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            activeFilter = btn.dataset.filter;
+            renderAllRooms();
+        });
+    });
+}
+
+// ==================== ACTIONS ====================
+function toggleDone(room, index) {
+    data[room][index].done = !data[room][index].done;
+    saveData();
+    refreshUI();
+}
+
+function addItem(room) {
+    const roomId = slugify(room);
+    const nameEl = document.getElementById("addName-" + roomId);
+    const name = nameEl.value.trim();
+    if (!name) { nameEl.focus(); return; }
+
+    const item = {
+        name: name,
+        who: document.getElementById("addWho-" + roomId).value.trim(),
+        garage: document.getElementById("addGarage-" + roomId).checked,
+        sell: document.getElementById("addSell-" + roomId).checked,
+        give: document.getElementById("addGive-" + roomId).checked,
+        trash: document.getElementById("addTrash-" + roomId).checked,
+        done: false,
+        notes: document.getElementById("addNotes-" + roomId).value.trim(),
+    };
+
+    data[room].push(item);
+    saveData();
+    refreshUI();
+}
+
+function deleteItem(room, index) {
+    if (!confirm("Remove \"" + data[room][index].name + "\"?")) return;
+    data[room].splice(index, 1);
+    saveData();
+    refreshUI();
+}
+
+function openEdit(room, index) {
+    editingItem = { room, index };
+    const item = data[room][index];
+    document.getElementById("editName").value = item.name;
+    document.getElementById("editWho").value = item.who || "";
+    document.getElementById("editGarage").checked = item.garage;
+    document.getElementById("editSell").checked = item.sell;
+    document.getElementById("editGive").checked = item.give;
+    document.getElementById("editTrash").checked = item.trash;
+    document.getElementById("editNotes").value = item.notes || "";
+    document.getElementById("editModal").classList.add("open");
+}
+
+function saveEdit() {
+    if (!editingItem) return;
+    const { room, index } = editingItem;
+    const item = data[room][index];
+    item.name = document.getElementById("editName").value.trim() || item.name;
+    item.who = document.getElementById("editWho").value.trim();
+    item.garage = document.getElementById("editGarage").checked;
+    item.sell = document.getElementById("editSell").checked;
+    item.give = document.getElementById("editGive").checked;
+    item.trash = document.getElementById("editTrash").checked;
+    item.notes = document.getElementById("editNotes").value.trim();
+    saveData();
+    closeModal();
+    refreshUI();
+}
+
+function closeModal() {
+    document.getElementById("editModal").classList.remove("open");
+    editingItem = null;
+}
+
+// Close modal on outside click
+document.getElementById("editModal").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) closeModal();
+});
+
+// ==================== STATS & PROGRESS ====================
+function updateStats() {
+    let total = 0, assigned = 0, garage = 0, sell = 0, give = 0, trash = 0, done = 0;
+    for (const room of ROOMS) {
+        for (const item of data[room] || []) {
+            total++;
+            if (item.who) assigned++;
+            if (item.garage) garage++;
+            if (item.sell) sell++;
+            if (item.give) give++;
+            if (item.trash) trash++;
+            if (item.done) done++;
+        }
+    }
+    document.getElementById("statsBar").innerHTML = `
+        <span class="stat"><span class="stat-dot dot-total"></span> ${total} Total</span>
+        <span class="stat"><span class="stat-dot dot-done"></span> ${done} Done</span>
+        <span class="stat"><span class="stat-dot dot-assigned"></span> ${assigned} Assigned</span>
+        <span class="stat"><span class="stat-dot dot-garage"></span> ${garage} Garage</span>
+        <span class="stat"><span class="stat-dot dot-sell"></span> ${sell} Sell</span>
+        <span class="stat"><span class="stat-dot dot-give"></span> ${give} Give Away</span>
+        <span class="stat"><span class="stat-dot dot-trash"></span> ${trash} Trash</span>
+    `;
+}
+
+function updateProgress() {
+    let total = 0, done = 0;
+    for (const room of ROOMS) {
+        for (const item of data[room] || []) {
+            total++;
+            if (item.done) done++;
+        }
+    }
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById("progressLabel").textContent = `${done} of ${total} items completed (${pct}%)`;
+    document.getElementById("progressFill").style.width = pct + "%";
+}
+
+function refreshUI() {
+    renderTabs();
+    renderAllRooms();
+    updateStats();
+    updateProgress();
+    setupFilterButtons();
+}
+
+// ==================== UTILITIES ====================
+function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function escapeAttr(str) {
+    return str.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+}
+
+// ==================== DATA EXPORT/IMPORT ====================
+// Available via browser console: exportData() / importData(jsonString)
+window.exportData = function() {
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "moving-checklist-backup.json";
+    a.click();
+    URL.revokeObjectURL(url);
+};
+
+window.importData = function(jsonString) {
+    try {
+        const imported = JSON.parse(jsonString);
+        data = imported;
+        saveData();
+        refreshUI();
+        alert("Data imported successfully!");
+    } catch (e) {
+        alert("Invalid JSON data");
+    }
+};
+
+window.resetData = function() {
+    if (confirm("This will reset ALL data back to the original spreadsheet. Are you sure?")) {
+        localStorage.removeItem("movingChecklist");
+        loadData();
+        refreshUI();
+    }
+};
+
+// ==================== START ====================
+init();
+</script>
+
+</body>
+</html>
