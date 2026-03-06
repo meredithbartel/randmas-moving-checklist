@@ -464,6 +464,18 @@
 <!-- ==================== TIMELINE PAGE ==================== -->
 <div class="page-view" id="page-timeline">
     <div class="timeline-section">
+        <div class="progress-section" style="margin-bottom:16px;">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <span class="progress-title">Timeline Progress</span>
+                    <span class="progress-pct" id="tlProgressPct">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="tlProgressFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-stats" id="tlProgressStats"></div>
+            </div>
+        </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
             <h2 style="font-size:1.25rem;font-weight:700;">Moving Timeline</h2>
             <button class="btn btn-primary btn-sm" onclick="openTimelineModal()">+ Add Task</button>
@@ -945,6 +957,9 @@ function renderTimeline() {
     const c = document.getElementById("timelineContent");
     if (timeline.length === 0) {
         c.innerHTML = `<div class="empty-state"><div class="empty-icon">&#128197;</div><p>No tasks yet. Add your first moving task!</p></div>`;
+        document.getElementById("tlProgressPct").textContent = "0%";
+        document.getElementById("tlProgressFill").style.width = "0%";
+        document.getElementById("tlProgressStats").textContent = "0 of 0 tasks completed";
         return;
     }
     const today = new Date().toISOString().split("T")[0];
@@ -998,6 +1013,14 @@ function renderTimeline() {
     html += renderGroup("No Date Set", "badge-nodate", groups.nodate);
 
     c.innerHTML = html;
+
+    // Update timeline progress bar
+    const total = timeline.length;
+    const done = timeline.filter(t => t.done).length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById("tlProgressPct").textContent = pct + "%";
+    document.getElementById("tlProgressFill").style.width = pct + "%";
+    document.getElementById("tlProgressStats").textContent = `${done} of ${total} tasks completed`;
 }
 
 // ==================== BUDGET RENDERING ====================
