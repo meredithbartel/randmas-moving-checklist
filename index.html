@@ -395,14 +395,119 @@
             .page-tab { padding: 10px 4px; font-size: 0.78rem; }
             .budget-summary { grid-template-columns: 1fr 1fr; }
         }
+        /* Animated checkmark */
+        .custom-check {
+            position: relative;
+        }
+        .custom-check.checked::after {
+            animation: checkPop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes checkPop {
+            0% { transform: rotate(45deg) translateY(-1px) scale(0); }
+            50% { transform: rotate(45deg) translateY(-1px) scale(1.3); }
+            100% { transform: rotate(45deg) translateY(-1px) scale(1); }
+        }
+        .custom-check.just-checked {
+            animation: checkBounce 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes checkBounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(0.85); }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* Room pill glow when complete */
+        .room-pill.complete {
+            border-color: var(--green) !important;
+            background: var(--green-bg) !important;
+            color: var(--green) !important;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        .room-pill.complete .pill-count { background: rgba(34, 197, 94, 0.2) !important; }
+        .room-pill.active.complete {
+            background: var(--green) !important;
+            color: white !important;
+            box-shadow: 0 2px 12px rgba(34, 197, 94, 0.4);
+        }
+        .room-pill.active.complete .pill-count { background: rgba(255,255,255,0.25) !important; }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(34, 197, 94, 0.2); }
+            50% { box-shadow: 0 0 16px rgba(34, 197, 94, 0.4); }
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute; width: 10px; height: 10px;
+            top: -10px; opacity: 1;
+            animation: confettiFall 3s ease-in forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Milestone toast */
+        .toast.milestone {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white; font-size: 1rem; padding: 16px 24px;
+            text-align: center;
+        }
+
+        /* Activity feed */
+        .activity-feed {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px; margin-top: 16px;
+            box-shadow: var(--shadow);
+        }
+        .activity-feed-title {
+            font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .activity-list { list-style: none; max-height: 200px; overflow-y: auto; }
+        .activity-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 8px 0; border-bottom: 1px solid var(--border);
+            font-size: 0.82rem; color: var(--text-secondary);
+            animation: activitySlide 0.3s ease;
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot {
+            width: 8px; height: 8px; min-width: 8px; border-radius: 50%;
+            margin-top: 5px;
+        }
+        .activity-dot.check { background: var(--green); }
+        .activity-dot.uncheck { background: var(--orange); }
+        .activity-dot.add { background: var(--blue); }
+        .activity-dot.delete { background: var(--red); }
+        .activity-dot.edit { background: var(--purple); }
+        .activity-time { font-size: 0.72rem; color: var(--gray); white-space: nowrap; margin-left: auto; }
+        @keyframes activitySlide {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Dynamic progress bar colors */
+        .progress-fill.red { background: linear-gradient(90deg, #ef4444, #f87171) !important; }
+        .progress-fill.orange { background: linear-gradient(90deg, #f59e0b, #fbbf24) !important; }
+        .progress-fill.yellow { background: linear-gradient(90deg, #eab308, #facc15) !important; }
+        .progress-fill.green { background: linear-gradient(90deg, #22c55e, #4ade80) !important; }
+
         @media print {
-            header, .page-tabs, .add-section, .item-actions, .sync-status, .filter-section { display: none !important; }
+            header, .page-tabs, .add-section, .item-actions, .sync-status, .filter-section, .activity-feed { display: none !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
+<div class="confetti-container" id="confettiContainer"></div>
 
 <header>
     <div class="header-content">
@@ -497,6 +602,16 @@
 </div>
 
 <!-- Edit Checklist Item Modal -->
+<!-- Activity Feed -->
+<div style="max-width:900px;margin:0 auto;padding:0 16px 16px;">
+    <div class="activity-feed" id="activityFeed">
+        <div class="activity-feed-title">&#128220; Recent Activity</div>
+        <ul class="activity-list" id="activityList">
+            <li class="activity-item"><span class="activity-dot add"></span><span>Welcome! Activity will show up here as changes are made.</span></li>
+        </ul>
+    </div>
+</div>
+
 <div class="modal-overlay" id="editModal">
     <div class="modal">
         <h3 class="modal-title">Edit Item</h3>
@@ -784,6 +899,15 @@ function initFirebase() {
             setSyncStatus(snap.val() ? "online" : "offline",
                 snap.val() ? "Synced in real-time" : "Offline - saved locally");
         });
+        // Listen to activity feed
+        db.ref("activity").on("value", snap => {
+            const val = snap.val();
+            if (val && Array.isArray(Object.values(val))) {
+                activityLog = Object.values(val);
+                localStorage.setItem("activityLog", JSON.stringify(activityLog));
+                renderActivityFeed();
+            }
+        });
         // Listen to all data
         db.ref("app").on("value", snapshot => {
             const val = snapshot.val();
@@ -859,7 +983,8 @@ function renderRoomPills() {
     for (const room of ROOMS) {
         const items = data[room]||[], done = items.filter(i=>i.done).length, total = items.length;
         const pill = document.createElement("button");
-        pill.className = "room-pill" + (room===activeRoom?" active":"");
+        const isComplete = total > 0 && done === total;
+        pill.className = "room-pill" + (room===activeRoom?" active":"") + (isComplete?" complete":"");
         pill.innerHTML = esc(room) + (total>0?` <span class="pill-count">${done}/${total}</span>`:"");
         pill.onclick = () => { activeRoom=room; renderRoomPills(); renderMainContent(); };
         c.appendChild(pill);
@@ -942,7 +1067,10 @@ function updateProgress() {
     }
     const pct = total>0?Math.round((done/total)*100):0;
     document.getElementById("progressPct").textContent = pct+"%";
-    document.getElementById("progressFill").style.width = pct+"%";
+    const pFill = document.getElementById("progressFill");
+    pFill.style.width = pct+"%";
+    applyProgressColor(pFill, pct);
+    document.getElementById("progressPct").style.color = `var(--${getProgressColor(pct) === "yellow" ? "orange" : getProgressColor(pct)})`;
     document.getElementById("progressStats").innerHTML = `
         <span class="mini-stat"><span class="mini-stat-icon" style="background:var(--green-bg);color:var(--green);">&#10003;</span> ${done} done</span>
         <span class="mini-stat"><span class="mini-stat-icon" style="background:#f1f5f9;color:#64748b;">&#9744;</span> ${total-done} left</span>
@@ -1019,7 +1147,10 @@ function renderTimeline() {
     const done = timeline.filter(t => t.done).length;
     const pct = total ? Math.round((done / total) * 100) : 0;
     document.getElementById("tlProgressPct").textContent = pct + "%";
-    document.getElementById("tlProgressFill").style.width = pct + "%";
+    const tlFill = document.getElementById("tlProgressFill");
+    tlFill.style.width = pct + "%";
+    applyProgressColor(tlFill, pct);
+    document.getElementById("tlProgressPct").style.color = `var(--${getProgressColor(pct) === "yellow" ? "orange" : getProgressColor(pct)})`;
     document.getElementById("tlProgressStats").textContent = `${done} of ${total} tasks completed`;
 }
 
@@ -1125,7 +1256,13 @@ function setupFilters() {
         };
     });
 }
-function toggleDone(room, i) { data[room][i].done=!data[room][i].done; saveAll(); fullRefresh(); }
+function toggleDone(room, i) {
+    const wasDone = data[room][i].done;
+    data[room][i].done = !wasDone;
+    if (!wasDone) { playCheckSound(); logActivity("check", `Checked off "${data[room][i].name}" in ${room}`); }
+    else { playUncheckSound(); logActivity("uncheck", `Unchecked "${data[room][i].name}" in ${room}`); }
+    saveAll(); fullRefresh(); checkMilestones();
+}
 function toggleAddForm(rid) {
     const form=document.getElementById("addForm-"+rid), toggle=document.getElementById("addToggle-"+rid);
     const open=form.classList.contains("open"); form.classList.toggle("open");
@@ -1147,9 +1284,10 @@ function addItem(room) {
         trash:document.getElementById("addTrash-"+rid).checked,
         done:false, notes:document.getElementById("addNotes-"+rid).value.trim(),
     });
+    logActivity("add", `Added "${name}" to ${room}`);
     saveAll(); fullRefresh();
 }
-function deleteItem(room,i) { if(!confirm(`Remove "${data[room][i].name}"?`))return; data[room].splice(i,1); saveAll(); fullRefresh(); }
+function deleteItem(room,i) { if(!confirm(`Remove "${data[room][i].name}"?`))return; logActivity("delete", `Removed "${data[room][i].name}" from ${room}`); data[room].splice(i,1); saveAll(); fullRefresh(); }
 function openEdit(room,i) {
     editingItem={room,index:i}; const item=data[room][i];
     document.getElementById("editName").value=item.name;
@@ -1173,6 +1311,7 @@ function saveEdit() {
     item.sell=document.getElementById("editSell").checked;
     item.give=document.getElementById("editGive").checked;
     item.trash=document.getElementById("editTrash").checked;
+    logActivity("edit", `Edited "${item.name}" in ${room}`);
     saveAll(); closeModal("editModal"); editingItem=null; fullRefresh();
 }
 
@@ -1198,12 +1337,18 @@ function saveTimelineItem() {
         notes:document.getElementById("tlNotes").value.trim(),
         done: editingTlIdx!==null ? timeline[editingTlIdx].done : false
     };
-    if (editingTlIdx!==null) timeline[editingTlIdx]=item;
-    else timeline.push(item);
+    if (editingTlIdx!==null) { timeline[editingTlIdx]=item; logActivity("edit", `Edited timeline task "${name}"`); }
+    else { timeline.push(item); logActivity("add", `Added timeline task "${name}"`); }
     editingTlIdx=null; saveAll(); closeModal("timelineModal"); fullRefresh();
 }
-function toggleTimelineDone(i) { timeline[i].done=!timeline[i].done; saveAll(); fullRefresh(); }
-function deleteTimelineItem(i) { if(!confirm(`Remove "${timeline[i].name}"?`))return; timeline.splice(i,1); saveAll(); fullRefresh(); }
+function toggleTimelineDone(i) {
+    const wasDone = timeline[i].done;
+    timeline[i].done = !wasDone;
+    if (!wasDone) { playCheckSound(); logActivity("check", `Completed timeline task "${timeline[i].name}"`); }
+    else { playUncheckSound(); logActivity("uncheck", `Reopened timeline task "${timeline[i].name}"`); }
+    saveAll(); fullRefresh();
+}
+function deleteTimelineItem(i) { if(!confirm(`Remove "${timeline[i].name}"?`))return; logActivity("delete", `Removed timeline task "${timeline[i].name}"`); timeline.splice(i,1); saveAll(); fullRefresh(); }
 
 // ==================== ACTIONS: BUDGET ====================
 function openExpenseModal() { editingExpIdx=null; document.getElementById("expenseModalTitle").textContent="Add Expense";
@@ -1231,11 +1376,11 @@ function saveExpense() {
         paid:document.getElementById("expPaid").value,
         notes:document.getElementById("expNotes").value.trim(),
     };
-    if (editingExpIdx!==null) expenses[editingExpIdx]=item;
-    else expenses.push(item);
+    if (editingExpIdx!==null) { expenses[editingExpIdx]=item; logActivity("edit", `Edited expense "${name}"`); }
+    else { expenses.push(item); logActivity("add", `Added expense "${name}"`); }
     editingExpIdx=null; saveAll(); closeModal("expenseModal"); fullRefresh();
 }
-function deleteExpense(i) { if(!confirm(`Remove "${expenses[i].name}"?`))return; expenses.splice(i,1); saveAll(); fullRefresh(); }
+function deleteExpense(i) { if(!confirm(`Remove "${expenses[i].name}"?`))return; logActivity("delete", `Removed expense "${expenses[i].name}"`); expenses.splice(i,1); saveAll(); fullRefresh(); }
 
 // ==================== MODALS ====================
 function openModal(id) { document.getElementById(id).classList.add("open"); }
@@ -1264,6 +1409,148 @@ function formatDate(d) {
     return months[parseInt(parts[1])-1] + " " + parseInt(parts[2]) + ", " + parts[0];
 }
 
+// ==================== CONFETTI ====================
+function launchConfetti() {
+    const container = document.getElementById("confettiContainer");
+    const colors = ["#6366f1","#a855f7","#22c55e","#f59e0b","#ef4444","#3b82f6","#ec4899","#14b8a6"];
+    for (let i = 0; i < 60; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = Math.random() * 100 + "%";
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.width = (Math.random() * 8 + 6) + "px";
+        piece.style.height = (Math.random() * 8 + 6) + "px";
+        piece.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+        piece.style.animationDuration = (Math.random() * 2 + 2) + "s";
+        piece.style.animationDelay = (Math.random() * 0.5) + "s";
+        container.appendChild(piece);
+    }
+    setTimeout(() => { container.innerHTML = ""; }, 4000);
+}
+
+// ==================== MILESTONE TOASTS ====================
+let lastMilestoneRoom = {};
+let lastMilestoneOverall = 0;
+function checkMilestones() {
+    // Overall progress milestones
+    let total=0, done=0;
+    for (const room of ROOMS) for (const item of data[room]||[]) { total++; if(item.done) done++; }
+    const pct = total>0 ? Math.round((done/total)*100) : 0;
+    const milestones = [25, 50, 75, 100];
+    for (const m of milestones) {
+        if (pct >= m && lastMilestoneOverall < m) {
+            const msgs = {
+                25: "25% done! Great start!",
+                50: "Halfway there! Keep going!",
+                75: "75% complete! Almost there!",
+                100: "ALL DONE! You did it!"
+            };
+            showMilestoneToast(msgs[m]);
+            if (m === 100) launchConfetti();
+            lastMilestoneOverall = m;
+            break;
+        }
+    }
+    if (pct < 25) lastMilestoneOverall = 0;
+    else if (pct < 50) lastMilestoneOverall = 25;
+    else if (pct < 75) lastMilestoneOverall = 50;
+    else if (pct < 100) lastMilestoneOverall = 75;
+
+    // Per-room completion
+    for (const room of ROOMS) {
+        const items = data[room]||[];
+        if (items.length === 0) continue;
+        const roomDone = items.every(i => i.done);
+        if (roomDone && !lastMilestoneRoom[room]) {
+            lastMilestoneRoom[room] = true;
+            showMilestoneToast(`${room} is all done!`);
+            launchConfetti();
+        }
+        if (!roomDone) lastMilestoneRoom[room] = false;
+    }
+}
+
+function showMilestoneToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show", "milestone");
+    clearTimeout(t._to);
+    t._to = setTimeout(() => { t.classList.remove("show", "milestone"); }, 3000);
+}
+
+// ==================== SOUND EFFECTS ====================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function playCheckSound() {
+    try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.type = "sine"; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.2);
+    } catch(e) {}
+}
+function playUncheckSound() {
+    try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.type = "sine"; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.15);
+    } catch(e) {}
+}
+
+// ==================== ACTIVITY FEED ====================
+let activityLog = [];
+function logActivity(type, message) {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    activityLog.unshift({ type, message, time: timeStr });
+    if (activityLog.length > 30) activityLog.length = 30;
+    // Save to localStorage
+    localStorage.setItem("activityLog", JSON.stringify(activityLog));
+    // Save to Firebase
+    if (USE_FIREBASE && db) {
+        db.ref("activity").set(activityLog);
+    }
+    renderActivityFeed();
+}
+function renderActivityFeed() {
+    const list = document.getElementById("activityList");
+    if (!list) return;
+    if (activityLog.length === 0) {
+        list.innerHTML = `<li class="activity-item"><span class="activity-dot add"></span><span>Welcome! Activity will show up here as changes are made.</span></li>`;
+        return;
+    }
+    list.innerHTML = activityLog.map(a =>
+        `<li class="activity-item">
+            <span class="activity-dot ${a.type}"></span>
+            <span>${esc(a.message)}</span>
+            <span class="activity-time">${a.time}</span>
+        </li>`
+    ).join("");
+}
+
+// ==================== PROGRESS BAR COLOR ====================
+function getProgressColor(pct) {
+    if (pct < 25) return "red";
+    if (pct < 50) return "orange";
+    if (pct < 75) return "yellow";
+    return "green";
+}
+function applyProgressColor(fillEl, pct) {
+    fillEl.classList.remove("red","orange","yellow","green");
+    fillEl.classList.add(getProgressColor(pct));
+}
+
 function fullRefresh() {
     if (activePage === "rooms") { renderRoomPills(); renderMainContent(); updateProgress(); }
     else if (activePage === "timeline") { renderTimeline(); }
@@ -1286,10 +1573,32 @@ window.resetData = function() {
 };
 
 // ==================== INIT ====================
+// Load activity log
+try {
+    const savedActivity = localStorage.getItem("activityLog");
+    if (savedActivity) activityLog = JSON.parse(savedActivity);
+} catch(e) {}
+
 loadAll();
+
+// Initialize milestone tracking to current state (don't fire on page load)
+{
+    let t=0,d=0;
+    for (const room of ROOMS) for (const item of data[room]||[]) { t++; if(item.done) d++; }
+    const p = t>0 ? Math.round((d/t)*100) : 0;
+    if (p >= 75) lastMilestoneOverall = 75;
+    else if (p >= 50) lastMilestoneOverall = 50;
+    else if (p >= 25) lastMilestoneOverall = 25;
+    for (const room of ROOMS) {
+        const items = data[room]||[];
+        if (items.length > 0 && items.every(i => i.done)) lastMilestoneRoom[room] = true;
+    }
+}
+
 setupPageTabs();
 setupFilters();
 fullRefresh();
+renderActivityFeed();
 initFirebase();
 </script>
 </body>
