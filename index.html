@@ -661,21 +661,93 @@ const DEFAULT_DATA = {
 };
 
 const DEFAULT_TIMELINE = [
+    // 8+ weeks out
     { name:"Sort items in each room", date:"", who:"Everyone", done:false, notes:"Go room by room and decide keep/sell/give/trash" },
-    { name:"Get moving quotes", date:"", who:"", done:false, notes:"Call at least 3 companies" },
-    { name:"Start packing non-essentials", date:"", who:"", done:false, notes:"" },
-    { name:"Hold garage sale", date:"", who:"", done:false, notes:"Sell marked items" },
-    { name:"Hire movers", date:"", who:"", done:false, notes:"" },
-    { name:"Change address with post office", date:"", who:"Mom", done:false, notes:"" },
-    { name:"Transfer utilities", date:"", who:"", done:false, notes:"Electric, gas, water, internet" },
-    { name:"Final walkthrough & clean", date:"", who:"Everyone", done:false, notes:"" },
-    { name:"Moving day", date:"", who:"Everyone", done:false, notes:"" },
+    { name:"Get moving quotes from 3+ companies", date:"", who:"", done:false, notes:"Compare prices, insurance, and availability" },
+    { name:"Create inventory of valuables", date:"", who:"Mom", done:false, notes:"Take photos for insurance purposes" },
+    { name:"Start collecting free boxes", date:"", who:"", done:false, notes:"Check grocery stores, liquor stores, Facebook Marketplace" },
+    { name:"Research new home area", date:"", who:"", done:false, notes:"Doctors, pharmacies, grocery stores, hospital nearby" },
+    // 6 weeks out
+    { name:"Hire movers / reserve truck", date:"", who:"", done:false, notes:"Book early for better rates" },
+    { name:"Start packing non-essentials", date:"", who:"", done:false, notes:"Seasonal items, books, decorations, basement" },
+    { name:"Donate or schedule charity pickup", date:"", who:"", done:false, notes:"Salvation Army, Goodwill, Habitat ReStore" },
+    { name:"Hold garage sale", date:"", who:"", done:false, notes:"Sell marked items - price everything clearly" },
+    { name:"Shred old documents & papers", date:"", who:"Mom", done:false, notes:"Keep tax records, important papers" },
+    // 4 weeks out
+    { name:"Change address with post office", date:"", who:"Mom", done:false, notes:"USPS.com or visit local post office" },
+    { name:"Notify bank, insurance, Social Security", date:"", who:"Mom", done:false, notes:"Update address on all accounts" },
+    { name:"Transfer or cancel utilities", date:"", who:"", done:false, notes:"Electric, gas, water, internet, trash, phone" },
+    { name:"Update prescriptions & transfer pharmacy", date:"", who:"Mom", done:false, notes:"Get 90-day supply if possible" },
+    { name:"Notify doctor, dentist, eye doctor", date:"", who:"Mom", done:false, notes:"Request records transfer" },
+    { name:"Cancel newspaper, lawn care, any subscriptions", date:"", who:"", done:false, notes:"" },
+    // 2 weeks out
+    { name:"Pack room by room - label every box", date:"", who:"Everyone", done:false, notes:"Label top AND side of boxes with room + contents" },
+    { name:"Arrange help for moving day", date:"", who:"", done:false, notes:"Confirm who's available to help" },
+    { name:"Clean out fridge & freezer", date:"", who:"", done:false, notes:"Use up perishables, defrost freezer" },
+    { name:"Pack a suitcase of essentials", date:"", who:"Mom", done:false, notes:"Meds, phone charger, toiletries, change of clothes, snacks" },
+    { name:"Take photos of electronics wiring", date:"", who:"", done:false, notes:"Before unplugging TV, cable box, etc." },
+    // 1 week out
+    { name:"Confirm moving company / truck reservation", date:"", who:"", done:false, notes:"Reconfirm date, time, and address" },
+    { name:"Pack remaining kitchen items", date:"", who:"", done:false, notes:"Keep out 1 pot, 1 pan, plates for the week" },
+    { name:"Disassemble furniture if needed", date:"", who:"", done:false, notes:"Keep screws in labeled bags taped to furniture" },
+    { name:"Give spare keys to new owner/landlord", date:"", who:"", done:false, notes:"Garage door openers, mailbox keys too" },
+    // Moving day
+    { name:"Do final walkthrough of every room", date:"", who:"Everyone", done:false, notes:"Check closets, attic, basement, garage, shed" },
+    { name:"Read meter numbers (gas, electric, water)", date:"", who:"", done:false, notes:"Take photos for final billing" },
+    { name:"Moving day!", date:"", who:"Everyone", done:false, notes:"Stay hydrated, take breaks, have snacks & water ready" },
+    // After move
+    { name:"Unpack essentials box first", date:"", who:"", done:false, notes:"Meds, toiletries, bedding, coffee maker" },
+    { name:"Set up bed & bathroom first", date:"", who:"", done:false, notes:"Most important for the first night" },
+    { name:"Update voter registration", date:"", who:"Mom", done:false, notes:"" },
+    { name:"Update driver's license address", date:"", who:"Mom", done:false, notes:"Visit DMV or update online" },
+    { name:"Meet the neighbors", date:"", who:"Mom", done:false, notes:"" },
+    { name:"Find new local emergency contacts", date:"", who:"", done:false, notes:"Nearest hospital, fire dept, police non-emergency" },
 ];
 
 const DEFAULT_EXPENSES = [
-    { name:"Moving truck / movers", amount:0, category:"Moving Costs", date:"", paid:"no", notes:"Get quotes" },
-    { name:"Packing boxes", amount:0, category:"Supplies", date:"", paid:"no", notes:"" },
-    { name:"Bubble wrap & tape", amount:0, category:"Supplies", date:"", paid:"no", notes:"" },
+    // Moving Costs
+    { name:"Moving company / truck rental", amount:0, category:"Moving Costs", date:"", paid:"no", notes:"Get 3 quotes - average is $800-2500 for local" },
+    { name:"Moving insurance / valuation coverage", amount:0, category:"Moving Costs", date:"", paid:"no", notes:"Ask movers about full-value protection" },
+    { name:"Gas for moving truck", amount:0, category:"Moving Costs", date:"", paid:"no", notes:"" },
+    { name:"Tip for movers", amount:0, category:"Moving Costs", date:"", paid:"no", notes:"$20-50 per mover is standard" },
+    { name:"Storage unit (if needed)", amount:0, category:"Moving Costs", date:"", paid:"no", notes:"Monthly cost" },
+    // Packing Supplies
+    { name:"Moving boxes (various sizes)", amount:0, category:"Supplies", date:"", paid:"no", notes:"Check if free ones available first" },
+    { name:"Bubble wrap & packing paper", amount:0, category:"Supplies", date:"", paid:"no", notes:"" },
+    { name:"Packing tape & dispenser", amount:0, category:"Supplies", date:"", paid:"no", notes:"Get 4-6 rolls" },
+    { name:"Markers & labels", amount:0, category:"Supplies", date:"", paid:"no", notes:"For labeling boxes by room" },
+    { name:"Mattress bags / furniture covers", amount:0, category:"Supplies", date:"", paid:"no", notes:"" },
+    // Repairs & Fixes
+    { name:"Ceiling repair (Back Door)", amount:0, category:"Repairs", date:"", paid:"no", notes:"Greg handling" },
+    { name:"Replace Front Door", amount:0, category:"Repairs", date:"", paid:"no", notes:"Scott handling" },
+    { name:"Paint Threshold near stairs", amount:0, category:"Repairs", date:"", paid:"no", notes:"Greg handling" },
+    { name:"Replace Light Fixture", amount:0, category:"Repairs", date:"", paid:"no", notes:"Scott handling" },
+    { name:"Light bulbs", amount:0, category:"Repairs", date:"", paid:"no", notes:"" },
+    { name:"Cleaning supplies for final clean", amount:0, category:"Repairs", date:"", paid:"no", notes:"" },
+    // Utilities / Setup
+    { name:"Electric deposit (new place)", amount:0, category:"Utilities", date:"", paid:"no", notes:"" },
+    { name:"Gas service setup", amount:0, category:"Utilities", date:"", paid:"no", notes:"" },
+    { name:"Water service setup", amount:0, category:"Utilities", date:"", paid:"no", notes:"" },
+    { name:"Internet / cable setup", amount:0, category:"Utilities", date:"", paid:"no", notes:"Compare providers in new area" },
+    { name:"Final electric bill (old house)", amount:0, category:"Utilities", date:"", paid:"no", notes:"" },
+    { name:"Final gas bill (old house)", amount:0, category:"Utilities", date:"", paid:"no", notes:"" },
+    { name:"Final water bill (old house)", amount:0, category:"Utilities", date:"", paid:"no", notes:"" },
+    // Monthly Bills
+    { name:"Phone bill", amount:0, category:"Monthly Bills", date:"", paid:"no", notes:"Monthly" },
+    { name:"Medicare supplement / insurance", amount:0, category:"Monthly Bills", date:"", paid:"no", notes:"Monthly" },
+    { name:"Prescription costs", amount:0, category:"Monthly Bills", date:"", paid:"no", notes:"Monthly" },
+    { name:"Car insurance", amount:0, category:"Monthly Bills", date:"", paid:"no", notes:"Update address" },
+    { name:"Home/renter's insurance (new place)", amount:0, category:"Monthly Bills", date:"", paid:"no", notes:"" },
+    // Income
+    { name:"Garage sale earnings", amount:0, category:"Income", date:"", paid:"no", notes:"Track total from sale" },
+    { name:"Roll top desk (if sold)", amount:0, category:"Income", date:"", paid:"no", notes:"" },
+    { name:"Recliner chair (if sold)", amount:0, category:"Income", date:"", paid:"no", notes:"" },
+    { name:"Cast iron stove (if sold)", amount:0, category:"Income", date:"", paid:"no", notes:"" },
+    { name:"Other sold items", amount:0, category:"Income", date:"", paid:"no", notes:"" },
+    // Other
+    { name:"Post office forwarding fee", amount:1.10, category:"Other", date:"", paid:"no", notes:"Free if done at post office, $1.10 online" },
+    { name:"New locks / key copies (new place)", amount:0, category:"Other", date:"", paid:"no", notes:"Always change locks when moving in" },
+    { name:"Address change on driver's license", amount:0, category:"Other", date:"", paid:"no", notes:"Check DMV fee" },
 ];
 
 // ==================== STATE ====================
