@@ -548,7 +548,10 @@
         </div>
     </div>
     <div class="room-nav">
-        <div class="room-pills" id="roomPills"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div class="room-pills" id="roomPills" style="flex:1;min-width:0;"></div>
+            <button class="btn btn-secondary btn-sm" style="white-space:nowrap;flex-shrink:0;" onclick="openAddRoomModal()">+ Room</button>
+        </div>
     </div>
     <div class="filter-section">
         <div class="filter-row">
@@ -560,6 +563,7 @@
             <button class="filter-chip" data-filter="sell">Sell</button>
             <button class="filter-chip" data-filter="give">Give Away</button>
             <button class="filter-chip" data-filter="trash">Trash</button>
+            <button class="filter-chip" data-filter="keep">Keep</button>
             <button class="filter-chip" data-filter="unassigned">No One Assigned</button>
         </div>
     </div>
@@ -718,6 +722,21 @@
         <div class="form-buttons">
             <button class="btn btn-primary" onclick="saveExpense()">Save</button>
             <button class="btn btn-secondary" onclick="closeModal('expenseModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Room Modal -->
+<div class="modal-overlay" id="addRoomModal">
+    <div class="modal">
+        <h3 class="modal-title">Add a Room</h3>
+        <div class="input-group" style="margin-bottom:16px;">
+            <label>Room Name</label>
+            <input type="text" id="newRoomName" placeholder="e.g. Attic, Guest Room, Office">
+        </div>
+        <div class="form-buttons">
+            <button class="btn btn-primary" onclick="addRoom()">Add Room</button>
+            <button class="btn btn-secondary" onclick="closeModal('addRoomModal')">Cancel</button>
         </div>
     </div>
 </div>
@@ -912,13 +931,16 @@ function initFirebase() {
         db.ref("app").on("value", snapshot => {
             const val = snapshot.val();
             if (!val) return;
+            if (val.rooms) {
+                for (const r of val.rooms) { if (!ROOMS.includes(r)) ROOMS.push(r); }
+            }
             if (val.checklist) {
                 data = {};
                 for (const room of ROOMS) data[room] = val.checklist[room] ? Object.values(val.checklist[room]) : [];
             }
             if (val.timeline) timeline = Object.values(val.timeline);
             if (val.expenses) expenses = Object.values(val.expenses);
-            localStorage.setItem("appData", JSON.stringify({ checklist: data, timeline, expenses }));
+            localStorage.setItem("appData", JSON.stringify({ checklist: data, timeline, expenses, rooms: ROOMS }));
             fullRefresh();
         });
     } catch (e) {
@@ -940,6 +962,10 @@ function loadAll() {
         data = parsed.checklist || {};
         timeline = parsed.timeline || [];
         expenses = parsed.expenses || [];
+        // Restore custom rooms
+        if (parsed.rooms) {
+            for (const r of parsed.rooms) { if (!ROOMS.includes(r)) ROOMS.push(r); }
+        }
         for (const room of ROOMS) { if (!data[room]) data[room] = []; }
     } else {
         for (const room of ROOMS) data[room] = DEFAULT_DATA[room] ? DEFAULT_DATA[room].map(i=>({...i})) : [];
@@ -950,9 +976,9 @@ function loadAll() {
 }
 
 function saveAll(quiet) {
-    localStorage.setItem("appData", JSON.stringify({ checklist: data, timeline, expenses }));
+    localStorage.setItem("appData", JSON.stringify({ checklist: data, timeline, expenses, rooms: ROOMS }));
     if (USE_FIREBASE && db) {
-        db.ref("app").set({ checklist: data, timeline, expenses });
+        db.ref("app").set({ checklist: data, timeline, expenses, rooms: ROOMS });
     }
     if (!quiet) showToast("Changes saved");
 }
@@ -1239,12 +1265,33 @@ function renderBudget() {
     bc.innerHTML = html;
 }
 
+// ==================== ADD ROOM ====================
+function openAddRoomModal() {
+    document.getElementById("newRoomName").value = "";
+    openModal("addRoomModal");
+    setTimeout(() => document.getElementById("newRoomName").focus(), 100);
+}
+function addRoom() {
+    const nameEl = document.getElementById("newRoomName");
+    const name = nameEl.value.trim();
+    if (!name) { nameEl.focus(); return; }
+    if (ROOMS.includes(name)) { showToast("Room already exists!"); return; }
+    ROOMS.push(name);
+    data[name] = [];
+    activeRoom = name;
+    logActivity("add", `Added new room "${name}"`);
+    saveAll();
+    closeModal("addRoomModal");
+    fullRefresh();
+}
+
 // ==================== ACTIONS: ROOMS ====================
 function matchesFilter(item) {
     switch(activeFilter) {
         case "all":return true; case "pending":return !item.done; case "done":return item.done;
         case "garage":return item.garage; case "sell":return item.sell;
         case "give":return item.give; case "trash":return item.trash;
+        case "keep":return !item.garage && !item.sell && !item.give && !item.trash;
         case "unassigned":return !item.who; default:return true;
     }
 }
